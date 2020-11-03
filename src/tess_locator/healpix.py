@@ -4,37 +4,51 @@ import itertools
 from collections import defaultdict
 from typing import Union
 import warnings
+import gzip
 
+from tqdm import tqdm
 import numpy as np
 
 from astropy_healpix import HEALPix
 from astropy.coordinates import SkyCoord, ICRS
 from astropy.time import Time
 from astropy.wcs import NoConvergence
+from astropy import units as u
 
-from tess_locator.wcsdb import get_wcs, time_to_sector
-from tess_locator import TessCoord, TessCoordList
-from tess_locator import SECTORS
+from .wcsdb import get_wcs, time_to_sector
+from .tesscoord import COLUMN_RANGE, ROW_RANGE
+from . import TessCoord, TessCoordList
+from . import SECTORS
 
+from . import log
 
-HEALPIX_NSIDE = 128
-HEALPIX_DB_FILENAME = 'healpix-index.json'
+HEALPIX_NSIDE = 2**6
+HEALPIX_DB_FILENAME = 'healpix-index.json.gz'
 
 
 class HealpixLocator():
-    
+    """Maps HealPix to (sector, camera, ccd) using a pre-computed lookup table.
+    """
+
     def __init__(self, dbfile=HEALPIX_DB_FILENAME):
         with open(HEALPIX_DB_FILENAME) as fp:
             self.db = json.load(fp, object_hook=lambda d: {int(k): v for k, v in d.items()})
         self.hp = HEALPix(nside=HEALPIX_NSIDE, frame=ICRS())
-    
-    def skycoord_to_ccdlist(self, crd):
-        #idx = hl.hp.skycoord_to_healpix(crd)
-        # `lonlat_` seems a factor 2x faster than `skycoord_to_healpix`
-        idx = hl.hp.lonlat_to_healpix(crd.ra, crd.dec)
+
+    def _skycoord_to_ccdlist(self, crd):
+        """Returns a list of (sector, camera, ccd) tuples which likely observed
+        the given coordinate `crd`.
+
+        Note: the list returned is a super-set of the true list of observations,
+        because it is approximated using healpix indexing.
+        """
+        # Note: `lonlat_to_healpix` seems a factor 2x faster than
+        # `skycoord_to_healpix`, which is why we use it here.
+        idx = self.hp.lonlat_to_healpix(crd.ra, crd.dec)
         return self.db.get(idx, [])
-    
-    def locate(self, target: Union[str, SkyCoord], time: Union[str, Time] = None, sector: int = None) -> TessCoordList:
+
+    def locate(self, target: Union[str, SkyCoord], time: Union[str, Time] = None,
+               sector: int = None, compute_pixel_position=True) -> TessCoordList:
         if isinstance(target, SkyCoord):
             crd = target
         else:
@@ -42,7 +56,7 @@ class HealpixLocator():
 
         if crd.shape != ():
             raise ValueError("Only single-valued SkyCoord objects are supported.")
-            
+
         sector_time = None
         if time:
             sector_time = [time_to_sector(time)]
@@ -51,8 +65,8 @@ class HealpixLocator():
 
         if sector is not None:
             sector_time = np.atleast_1d(sector)
-            
-        ccdlist = self.skycoord_to_ccdlist(target)
+
+        ccdlist = self._skycoord_to_ccdlist(target)
         result = []
         for sctr, camera, ccd in ccdlist:
             if sector_time and sctr not in sector_time:
@@ -70,20 +84,39 @@ class HealpixLocator():
         return TessCoordList(result)
 
 
-def healpix_lookup_generator():
-    hp = HEALPix(nside=HEALPIX_NSIDE, frame=ICRS())
-    healpix_index = defaultdict(list)
+def create_healpix_lookup_table(nside: int = None) -> dict:
+    """Returns a dictionary mapping healpix onto (sector, camera, ccd).
+
+    Parameters
+    ----------
+    nside : int
+        Healpix parameter.
+    """
+    if nside is None:
+        nside = HEALPIX_NSIDE
+
+    hp = HEALPix(nside=nside, frame=ICRS())
+    healpix_lookup = defaultdict(list)
 
     sector = range(1, SECTORS+1)
-    for sctr, camera, ccd in itertools.product(sector, [1, 2, 3, 4], [1, 2, 3, 4]):
+    combinations = itertools.product(sector, [1, 2, 3, 4], [1, 2, 3, 4])
+    for sctr, camera, ccd in tqdm(combinations, total=len(sector)*4*4):
         wcs = get_wcs(sector=sctr, camera=camera, ccd=ccd)
-        center_crd = wcs.pixel_to_world(1024, 1024)
-        # Center-to-corner distance of a TESS CCD is approx ~8.1 degrees,
+        center_crd = wcs.pixel_to_world(np.mean(COLUMN_RANGE), np.mean(ROW_RANGE))
+        # Center-to-corner distance of a TESS CCD is approx ~8.5 degrees,
         # so we request the HealPix values across a cone centered on the
-        # center of the CCD with a radius of 8.5 degrees.
-        result = hp.cone_search_skycoord(center_crd, radius=8.5*u.deg)
+        # center of the CCD with a radius of 8.6 degrees.
+        result = hp.cone_search_skycoord(center_crd, radius=8.6*u.deg)
         for idx in result:
-            healpix_index[int(idx)].append((sctr, camera, ccd))
+            healpix_lookup[int(idx)].append((sctr, camera, ccd))
 
-    with open(HEALPIX_DB_FILENAME, 'w') as fp:
-        json.dump(healpix_index, fp)
+    return healpix_lookup
+
+
+def write_healpix_lookup_table(nside: int = None, output_fn: str = None):
+    if output_fn is None:
+        output_fn = HEALPIX_DB_FILENAME
+    log.info(f"Writing {HEALPIX_DB_FILENAME}")
+    healpix_lookup = create_healpix_lookup_table(nside=nside)
+    with open(HEALPIX_DB_FILENAME, 'wt') as fp:
+        json.dump(healpix_lookup, fp)
