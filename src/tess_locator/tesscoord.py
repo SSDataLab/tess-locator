@@ -4,6 +4,7 @@ from collections import UserList
 from typing import Union
 
 import numpy as np
+from pandas import DataFrame
 
 from astropy.coordinates import SkyCoord
 from astropy.time import Time
@@ -64,3 +65,8 @@ class TessCoordList(UserList):
         if len(self) > 8:
             x.insert(4, "...")
         return f"List of {len(self)} coordinates\n ↳[" + "\n   ".join(x) + f"]"
+    
+    def to_pandas(self) -> DataFrame:
+        data = [{'sector': c.sector, 'camera': c.camera, 'ccd': c.ccd, 'column': c.column, 'row': c.row} for c in self]
+        return DataFrame(data)
+
