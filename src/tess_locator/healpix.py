@@ -5,6 +5,7 @@ from collections import defaultdict
 from typing import Union
 import warnings
 from functools import lru_cache
+from pathlib import Path
 
 from tqdm import tqdm
 import numpy as np
@@ -18,12 +19,11 @@ from astropy import units as u
 from .wcsdb import get_wcs, time_to_sector
 from .tesscoord import COLUMN_RANGE, ROW_RANGE
 from . import TessCoord, TessCoordList
-from . import SECTORS
+from . import SECTORS, DATADIR, log
 
-from . import log
 
-HEALPIX_NSIDE = 2**6
-HEALPIX_DB_FILENAME = 'healpix-index.json.gz'
+HEALPIX_NSIDE = 64
+HEALPIX_DB_FILENAME = DATADIR / Path('healpix-index.json.gz')
 
 
 class HealpixLocator():
