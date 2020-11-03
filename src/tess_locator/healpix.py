@@ -4,7 +4,7 @@ import itertools
 from collections import defaultdict
 from typing import Union
 import warnings
-import gzip
+from functools import lru_cache
 
 from tqdm import tqdm
 import numpy as np
@@ -31,8 +31,7 @@ class HealpixLocator():
     """
 
     def __init__(self, dbfile=HEALPIX_DB_FILENAME):
-        with open(HEALPIX_DB_FILENAME) as fp:
-            self.db = json.load(fp, object_hook=lambda d: {int(k): v for k, v in d.items()})
+        self.db = load_healpix_table(dbfile)
         self.hp = HEALPix(nside=HEALPIX_NSIDE, frame=ICRS())
 
     def _skycoord_to_ccdlist(self, crd):
@@ -48,7 +47,7 @@ class HealpixLocator():
         return self.db.get(idx, [])
 
     def locate(self, target: Union[str, SkyCoord], time: Union[str, Time] = None,
-               sector: int = None, compute_pixel_position=True) -> TessCoordList:
+               sector: int = None) -> TessCoordList:
         if isinstance(target, SkyCoord):
             crd = target
         else:
@@ -84,6 +83,12 @@ class HealpixLocator():
         return TessCoordList(result)
 
 
+@lru_cache
+def load_healpix_table(dbfile: str = HEALPIX_DB_FILENAME) -> dict:
+    with open(HEALPIX_DB_FILENAME) as fp:
+        return json.load(fp, object_hook=lambda d: {int(k): v for k, v in d.items()})
+
+
 def create_healpix_lookup_table(nside: int = None) -> dict:
     """Returns a dictionary mapping healpix onto (sector, camera, ccd).
 
@@ -113,7 +118,9 @@ def create_healpix_lookup_table(nside: int = None) -> dict:
     return healpix_lookup
 
 
-def write_healpix_lookup_table(nside: int = None, output_fn: str = None):
+def write_healpix_lookup_table(nside: int = None, output_fn: str = None) -> None:
+    """Generates and stores the HEALPix lookup table.
+    """
     if output_fn is None:
         output_fn = HEALPIX_DB_FILENAME
     log.info(f"Writing {HEALPIX_DB_FILENAME}")
