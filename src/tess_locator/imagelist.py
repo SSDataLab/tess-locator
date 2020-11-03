@@ -16,7 +16,7 @@ from pandas import DataFrame
 import numpy as np
 
 from astropy.wcs import WCS
-from astropy.io.fits import Header, getheader
+from astropy.io.fits import Header, getheader, open, HDUList
 from astropy.utils.exceptions import AstropyUserWarning
 from astropy.time import Time
 
@@ -79,6 +79,9 @@ class TessImage():
     def download_wcs(self) -> WCS:
         """Downloads the image WCS."""
         return WCS(self.download_header(ext=1, nbytes=40000))
+
+    def download(self) -> HDUList:
+        return open(self.url)
 
 
 class TessImageList(UserList):
