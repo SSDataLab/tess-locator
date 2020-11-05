@@ -1,17 +1,18 @@
-__version__ = '0.1.0'
+__version__ = "0.1.0"
 
-__all__ = ['TessCoord', 'TessCoordList', 'TessImage', 'TessImageList',
-           'locate']
+__all__ = ["TessCoord", "TessCoordList", "TessImage", "TessImageList", "locate"]
 
 SECTORS = 28
 
 # Where does this package store its embedded data?
 from pathlib import Path
+
 PACKAGEDIR = Path(__file__).parent.absolute()
 DATADIR = PACKAGEDIR / "data"
 
 # Configure logging
 import logging
+
 log = logging.getLogger(__name__)
 log.addHandler(logging.StreamHandler())
 

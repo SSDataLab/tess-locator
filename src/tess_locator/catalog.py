@@ -36,16 +36,16 @@ def _query_ffi_catalog(sector: int) -> DataFrame:
     """Returns a DataFrame listing the FFI images for a given sector."""
     tbl = _mast_ffi_query(sector=sector)
     df = tbl.to_pandas()
-    df['filename'] = df['access_url'].str.split("/").str[-1]
+    df["filename"] = df["access_url"].str.split("/").str[-1]
     # Extract sector, camera, and ccd from the filename encoding
-    df['sector'] = df['filename'].str.extract(r'.*-s(\d+)-.*').astype(int)
-    df['camera'] = df['filename'].str.extract(r'.*-s\d+-(\d)-.*').astype(int)
-    df['ccd'] = df['filename'].str.extract(r'.*-s\d+-\d-(\d)-.*').astype(int)
+    df["sector"] = df["filename"].str.extract(r".*-s(\d+)-.*").astype(int)
+    df["camera"] = df["filename"].str.extract(r".*-s\d+-(\d)-.*").astype(int)
+    df["ccd"] = df["filename"].str.extract(r".*-s\d+-\d-(\d)-.*").astype(int)
     # Convert begin and end time from MJD to an ISO timestamp
-    df['start'] = pd.Series(Time(df['t_min'], format='mjd').iso).str.slice(stop=19)
-    df['stop'] = pd.Series(Time(df['t_max'], format='mjd').iso).str.slice(stop=19)
-    df = df.sort_values('filename')
-    return df[['filename', 'sector', 'camera', 'ccd',  'start', 'stop']]
+    df["start"] = pd.Series(Time(df["t_min"], format="mjd").iso).str.slice(stop=19)
+    df["stop"] = pd.Series(Time(df["t_max"], format="mjd").iso).str.slice(stop=19)
+    df = df.sort_values("filename")
+    return df[["filename", "sector", "camera", "ccd", "start", "stop"]]
 
 
 def _ffi_catalog_path(sector: int) -> Path:
@@ -66,8 +66,8 @@ def fetch_ffi_catalog(sector, path=None) -> DataFrame:
 
 
 def fetch_all_catalogs():
-    for sector in range(1, SECTORS+1):
-        log.info(f'Fetching sector {sector}/{SECTORS}')
+    for sector in range(1, SECTORS + 1):
+        log.info(f"Fetching sector {sector}/{SECTORS}")
         fetch_ffi_catalog(sector=sector)
 
 

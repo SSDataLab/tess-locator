@@ -23,12 +23,12 @@ from astropy.time import Time
 from . import catalog, log
 
 
-FFI_FILENAME_REGEX = r'.*-s(\d+)-(\d)-(\d)-.*'
+FFI_FILENAME_REGEX = r".*-s(\d+)-(\d)-(\d)-.*"
 FFI_URL_PREFIX = "https://mast.stsci.edu/portal/Download/file?uri=mast:TESS/product/"
 
 
 @attr.s(slots=True, frozen=True)
-class TessImage():
+class TessImage:
     filename: str = attr.ib()
     begin: str = attr.ib(default=None)
     end: str = attr.ib(default=None)
@@ -65,7 +65,7 @@ class TessImage():
         # Download the FFI partially
         http_headers = {}
         if nbytes:
-            http_headers['Range'] = f'bytes=0-{nbytes}'
+            http_headers["Range"] = f"bytes=0-{nbytes}"
         url = self.url
         log.debug(f"Downloading {nbytes} bytes of {url}")
         resp = httpx.get(url, headers=http_headers)
@@ -86,7 +86,6 @@ class TessImage():
 
 
 class TessImageList(UserList):
-
     def __repr__(self):
         x = []
         if len(self) > 8:
@@ -100,18 +99,33 @@ class TessImageList(UserList):
         return f"List of {len(self)} images\n ↳[" + "\n   ".join(x) + f"]"
 
     def to_pandas(self) -> DataFrame:
-        data = [{'filename': im.filename, 'sector': im.sector, 'camera': im.camera, 'ccd': im.ccd, 'begin': im.begin, 'end': im.end, 'url': im.url} for im in self]
+        data = [
+            {
+                "filename": im.filename,
+                "sector": im.sector,
+                "camera": im.camera,
+                "ccd": im.ccd,
+                "begin": im.begin,
+                "end": im.end,
+                "url": im.url,
+            }
+            for im in self
+        ]
         return DataFrame(data)
 
     @classmethod
     def from_catalog(cls, catalog: DataFrame):
         # We use raw=True because it gains significant speed
-        series = catalog.apply(lambda x: TessImage(filename=x[0], begin=x[4], end=x[5]), axis=1, raw=True)
+        series = catalog.apply(
+            lambda x: TessImage(filename=x[0], begin=x[4], end=x[5]), axis=1, raw=True
+        )
         return cls(series.values)
 
 
 @lru_cache
-def list_images(sector: int, camera: int = None, ccd: int = None, time: Union[str, Time] = None) -> TessImageList:
+def list_images(
+    sector: int, camera: int = None, ccd: int = None, time: Union[str, Time] = None
+) -> TessImageList:
     df = catalog.load_ffi_catalog(sector=sector)
     if camera:
         df = df[df.camera == camera]
@@ -120,8 +134,8 @@ def list_images(sector: int, camera: int = None, ccd: int = None, time: Union[st
     if time:
         if isinstance(time, str):
             time = Time(time)
-        begin = Time(np.array(df.start, dtype=str), format='iso')
-        end = Time(np.array(df.stop, dtype=str), format='iso')
+        begin = Time(np.array(df.start, dtype=str), format="iso")
+        end = Time(np.array(df.stop, dtype=str), format="iso")
         mask = (time >= begin) & (time <= end)
         df = df[mask]
     return TessImageList.from_catalog(df)

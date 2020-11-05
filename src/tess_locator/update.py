@@ -8,8 +8,8 @@ from .healpix import write_healpix_lookup_table
 
 
 def update():
-   write_healpix_lookup_table()
+    write_healpix_lookup_table()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     update()

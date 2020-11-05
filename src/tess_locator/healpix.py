@@ -23,12 +23,11 @@ from . import SECTORS, DATADIR, log
 
 
 HEALPIX_NSIDE = 64
-HEALPIX_DB_FILENAME = DATADIR / Path('healpix-index.json.gz')
+HEALPIX_DB_FILENAME = DATADIR / Path("healpix-index.json.gz")
 
 
-class HealpixLocator():
-    """Maps HealPix to (sector, camera, ccd) using a pre-computed lookup table.
-    """
+class HealpixLocator:
+    """Maps HealPix to (sector, camera, ccd) using a pre-computed lookup table."""
 
     def __init__(self, dbfile=HEALPIX_DB_FILENAME):
         self.db = load_healpix_table(dbfile)
@@ -46,8 +45,12 @@ class HealpixLocator():
         idx = self.hp.lonlat_to_healpix(crd.ra, crd.dec)
         return self.db.get(idx, [])
 
-    def locate(self, target: Union[str, SkyCoord], time: Union[str, Time] = None,
-               sector: int = None) -> TessCoordList:
+    def locate(
+        self,
+        target: Union[str, SkyCoord],
+        time: Union[str, Time] = None,
+        sector: int = None,
+    ) -> TessCoordList:
         if isinstance(target, SkyCoord):
             crd = target
         else:
@@ -73,10 +76,14 @@ class HealpixLocator():
             wcs = get_wcs(sector=sctr, camera=camera, ccd=ccd)
             try:
                 with warnings.catch_warnings():
-                    warnings.filterwarnings("ignore", message="All-NaN slice encountered")
+                    warnings.filterwarnings(
+                        "ignore", message="All-NaN slice encountered"
+                    )
                     # Using `wcs_` instead of `all_world2pix` would be faster but introduce errors >20px
                     pixel = wcs.all_world2pix(crd.ra, crd.dec, 1, tolerance=0.1)
-                    tesscrd = TessCoord(sctr, camera, ccd, column=pixel[0], row=pixel[1])
+                    tesscrd = TessCoord(
+                        sctr, camera, ccd, column=pixel[0], row=pixel[1]
+                    )
                     result.append(tesscrd)
             except (NoConvergence, ValueError):
                 pass
@@ -103,15 +110,15 @@ def create_healpix_lookup_table(nside: int = None) -> dict:
     hp = HEALPix(nside=nside, frame=ICRS())
     healpix_lookup = defaultdict(list)
 
-    sector = range(1, SECTORS+1)
+    sector = range(1, SECTORS + 1)
     combinations = itertools.product(sector, [1, 2, 3, 4], [1, 2, 3, 4])
-    for sctr, camera, ccd in tqdm(combinations, total=len(sector)*4*4):
+    for sctr, camera, ccd in tqdm(combinations, total=len(sector) * 4 * 4):
         wcs = get_wcs(sector=sctr, camera=camera, ccd=ccd)
         center_crd = wcs.pixel_to_world(np.mean(COLUMN_RANGE), np.mean(ROW_RANGE))
         # Center-to-corner distance of a TESS CCD is approx ~8.5 degrees,
         # so we request the HealPix values across a cone centered on the
         # center of the CCD with a radius of 8.6 degrees.
-        result = hp.cone_search_skycoord(center_crd, radius=8.6*u.deg)
+        result = hp.cone_search_skycoord(center_crd, radius=8.6 * u.deg)
         for idx in result:
             healpix_lookup[int(idx)].append((sctr, camera, ccd))
 
@@ -119,11 +126,10 @@ def create_healpix_lookup_table(nside: int = None) -> dict:
 
 
 def write_healpix_lookup_table(nside: int = None, output_fn: str = None) -> None:
-    """Generates and stores the HEALPix lookup table.
-    """
+    """Generates and stores the HEALPix lookup table."""
     if output_fn is None:
         output_fn = HEALPIX_DB_FILENAME
     log.info(f"Writing {HEALPIX_DB_FILENAME}")
     healpix_lookup = create_healpix_lookup_table(nside=nside)
-    with open(HEALPIX_DB_FILENAME, 'wt') as fp:
+    with open(HEALPIX_DB_FILENAME, "wt") as fp:
         json.dump(healpix_lookup, fp)

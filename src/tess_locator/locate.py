@@ -13,14 +13,16 @@ from .healpix import HealpixLocator
 from . import TessCoord, TessCoordList, SECTORS
 
 
-def locate(target: Union[str, SkyCoord],
-           time: Union[str, Time] = None,
-           sector: int = None) -> TessCoordList:
+def locate(
+    target: Union[str, SkyCoord], time: Union[str, Time] = None, sector: int = None
+) -> TessCoordList:
     hloc = HealpixLocator()
     return hloc.locate(target=target, time=time, sector=sector)
 
 
-def _locate_slow(target: Union[str, SkyCoord], time: Union[str, Time] = None, sector: int = None) -> TessCoordList:
+def _locate_slow(
+    target: Union[str, SkyCoord], time: Union[str, Time] = None, sector: int = None
+) -> TessCoordList:
     """Returns a `TessCoordList.
 
     `target` only accepts a single-valued SkyCoord to avoid ambiguity between
@@ -40,7 +42,7 @@ def _locate_slow(target: Union[str, SkyCoord], time: Union[str, Time] = None, se
             return TessCoordList([])
 
     if sector is None:
-        sector = range(1, SECTORS+1)
+        sector = range(1, SECTORS + 1)
     else:
         sector = np.atleast_1d(sector)
 
