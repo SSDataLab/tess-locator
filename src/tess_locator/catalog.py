@@ -1,4 +1,7 @@
-"""Implements a minimalist database of TESS FFI images."""
+"""Implements a minimalist database of TESS FFI images.
+
+The database is stored in Parquet files ("data/tess-sxxxx-ffi-catalog.parquet").
+"""
 # TEST IDEAS
 # * add test to check that number of FFIs matches those in the bulk download script
 # * number of FFI images should always be a multiple of four

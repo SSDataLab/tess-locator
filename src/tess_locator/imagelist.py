@@ -1,6 +1,6 @@
 """Defines the `TessImage` and `TessImageList` classes.
 
-These classes represent key meta data of Full Frame Images (FFIs).
+These classes are used to store meta data of Full Frame Images (FFIs).
 """
 from collections import UserList
 from functools import lru_cache
@@ -25,6 +25,7 @@ from . import catalog, log
 
 FFI_FILENAME_REGEX = r'.*-s(\d+)-(\d)-(\d)-.*'
 FFI_URL_PREFIX = "https://mast.stsci.edu/portal/Download/file?uri=mast:TESS/product/"
+
 
 @attr.s(slots=True, frozen=True)
 class TessImage():
