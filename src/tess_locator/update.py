@@ -1,4 +1,9 @@
-"""Implements `python -m tess_locator.update`"""
+"""Script to update the FFI database that powers `tess-locator`.
+
+Usage
+=====
+$ python -m tess_locator.update
+"""
 from .healpix import write_healpix_lookup_table
 
 

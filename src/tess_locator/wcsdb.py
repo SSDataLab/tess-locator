@@ -68,15 +68,23 @@ def get_wcs(sector: int, camera: int, ccd: int) -> WCS:
 
 
 @lru_cache
+def get_sector_dates() -> DataFrame:
+    """Returns a DataFrame with sector, begin, end."""
+    db = load_wcs_db()
+    begin = db.groupby('sector')['begin'].min()
+    end = db.groupby('sector')['end'].max()
+    return begin.to_frame().join(end)
+
+
+@lru_cache
 def time_to_sector(time: Union[str, Time]) -> int:
     """Returns the sector number for a given timestamp."""
-    if isinstance(time, str):
-        time = Time(time)
+    if isinstance(time, Time):
+        time = time.iso
 
-    db = load_wcs_db()
-    begin = Time(np.array(db.begin, dtype=str), format='iso')
-    end = Time(np.array(db.end, dtype=str), format='iso')
-    mask = (time >= begin) & (time <= end)
-    if mask.sum() > 0:
-        return db[mask].iloc[0].sector
+    dates = get_sector_dates()
+    for row in dates.itertuples():
+        if (time >= row.begin) & (time <= row.end):
+            return row.Index
+
     return None
