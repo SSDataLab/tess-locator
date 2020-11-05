@@ -5,14 +5,15 @@ The database is stored in Parquet files ("data/tess-sxxxx-ffi-catalog.parquet").
 # TEST IDEAS
 # * add test to check that number of FFIs matches those in the bulk download script
 # * number of FFI images should always be a multiple of four
-from functools import lru_cache
+
 import logging
+from functools import lru_cache
 from pathlib import Path
 
+import pandas as pd
 from astropy.table import Table
 from astropy.time import Time
 from astroquery.utils.tap.core import TapPlus
-import pandas as pd
 from pandas import DataFrame
 
 from . import DATADIR, SECTORS

@@ -1,26 +1,23 @@
 """Implements a faster version of `locate()` using Healpix indexing."""
-import json
 import itertools
-from collections import defaultdict
-from typing import Union
+import json
 import warnings
+from collections import defaultdict
 from functools import lru_cache
 from pathlib import Path
+from typing import Union
 
-from tqdm import tqdm
 import numpy as np
-
-from astropy_healpix import HEALPix
-from astropy.coordinates import SkyCoord, ICRS
+from astropy import units as u
+from astropy.coordinates import ICRS, SkyCoord
 from astropy.time import Time
 from astropy.wcs import NoConvergence
-from astropy import units as u
+from astropy_healpix import HEALPix
+from tqdm import tqdm
 
-from .wcsdb import get_wcs, time_to_sector
+from . import DATADIR, SECTORS, TessCoord, TessCoordList, log
 from .tesscoord import COLUMN_RANGE, ROW_RANGE
-from . import TessCoord, TessCoordList
-from . import SECTORS, DATADIR, log
-
+from .wcsdb import get_wcs, time_to_sector
 
 HEALPIX_NSIDE = 64
 HEALPIX_DB_FILENAME = DATADIR / Path("healpix-index.json.gz")

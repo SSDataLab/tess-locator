@@ -2,26 +2,24 @@
 
 These classes are used to store meta data of Full Frame Images (FFIs).
 """
-from collections import UserList
-from functools import lru_cache
 import io
 import re
 import warnings
+from collections import UserList
+from functools import lru_cache
 from typing import Union
 
 import attr
 import backoff
 import httpx
-from pandas import DataFrame
 import numpy as np
-
-from astropy.wcs import WCS
-from astropy.io.fits import Header, getheader, open, HDUList
-from astropy.utils.exceptions import AstropyUserWarning
+from astropy.io.fits import HDUList, Header, getheader, open
 from astropy.time import Time
+from astropy.utils.exceptions import AstropyUserWarning
+from astropy.wcs import WCS
+from pandas import DataFrame
 
 from . import catalog, log
-
 
 FFI_FILENAME_REGEX = r".*-s(\d+)-(\d)-(\d)-.*"
 FFI_URL_PREFIX = "https://mast.stsci.edu/portal/Download/file?uri=mast:TESS/product/"

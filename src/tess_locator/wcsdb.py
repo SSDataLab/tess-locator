@@ -12,7 +12,6 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Union
 
-import numpy as np
 import pandas as pd
 from astropy.time import Time
 from astropy.wcs import WCS

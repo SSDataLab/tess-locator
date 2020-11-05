@@ -1,17 +1,15 @@
-from tess_fov.imagelist import TessImageList
-import attr
 from collections import UserList
 from typing import Union
 
+import attr
 import numpy as np
-from pandas import DataFrame
-
 from astropy.coordinates import SkyCoord
 from astropy.time import Time
+from pandas import DataFrame
 
 from . import list_images
+from .imagelist import TessImageList
 from .wcsdb import get_wcs
-
 
 # The science area of the TESS CCDs are bounded by:
 # lower left corner: (column, row) = (45, 1)

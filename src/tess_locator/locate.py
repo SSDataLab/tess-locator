@@ -1,16 +1,15 @@
 import itertools
 import warnings
-
 from typing import Union
 
+import numpy as np
 from astropy.coordinates import SkyCoord
 from astropy.time import Time
 from astropy.wcs import NoConvergence
-import numpy as np
 
-from .wcsdb import get_wcs, time_to_sector
+from . import SECTORS, TessCoord, TessCoordList
 from .healpix import HealpixLocator
-from . import TessCoord, TessCoordList, SECTORS
+from .wcsdb import get_wcs, time_to_sector
 
 
 def locate(
