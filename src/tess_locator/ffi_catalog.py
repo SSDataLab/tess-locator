@@ -29,6 +29,7 @@ def _mast_ffi_query(sector: int) -> Table:
                WHERE obs_collection='TESS' AND dataproduct_type = "image"
                AND obs_id LIKE 'tess%-s{sector:04d}-%'"""
     log.info(f"Sending TAP query to MAST for sector {sector}.")
+    log.debug(adql)
     job = mast_tap.launch_job_async(adql)
     return job.get_results()
 
@@ -36,6 +37,7 @@ def _mast_ffi_query(sector: int) -> Table:
 def _query_ffi_catalog(sector: int) -> DataFrame:
     """Returns a DataFrame listing the FFI images for a given sector."""
     tbl = _mast_ffi_query(sector=sector)
+    log.info(f"Found {len(tbl)} FFIs for sector {sector}.")
     df = tbl.to_pandas()
     df["filename"] = df["access_url"].str.split("/").str[-1]
     # Extract sector, camera, and ccd from the filename encoding
@@ -54,15 +56,18 @@ def _ffi_catalog_path(sector: int) -> Path:
     return DATADIR / Path(f"tess-s{sector:04d}-ffi-catalog.parquet")
 
 
-def update_ffi_catalog(sector, path=None) -> DataFrame:
+def update_ffi_catalog(sector, path=None, overwrite=False) -> DataFrame:
     if path is None:
         path = _ffi_catalog_path(sector=sector)
-    if Path(path).exists():
-        log.info(f"Skipping sector {sector}: file already exists ({path})")
+    if not overwrite and Path(path).exists():
+        log.info(
+            f"Skipping sector {sector}: file already exists ({path}).  Use `overwrite=True` to force-update."
+        )
         return None
-    log.info(f"Writing {path}")
     df = _query_ffi_catalog(sector=sector)
+    log.info(f"Started writing {path}")
     df.to_parquet(path, compression="gzip")
+    log.info(f"Finished writing {path}")
     return df
 
 

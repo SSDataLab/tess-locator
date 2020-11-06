@@ -10,7 +10,7 @@ import itertools
 import warnings
 from functools import lru_cache
 from pathlib import Path
-from typing import List, Union
+from typing import Union
 from tqdm import tqdm
 
 import pandas as pd
@@ -20,23 +20,23 @@ from pandas import DataFrame
 
 from . import DATADIR, SECTORS, imagelist, log
 
-# Where do we store all the WCS data?
-WCS_CATALOG: Path = DATADIR / Path("tess-wcs-catalog.parquet")
+
+def _wcs_catalog_path(sector: int) -> Path:
+    """Returns the filename of the WCS catalog of a given sector."""
+    return DATADIR / Path(f"tess-s{sector:04d}-wcs-catalog.parquet")
 
 
-def update_wcs_catalog(sectors: List[int] = None):
-    """Write WCS data of all sectors to a Parquet file.
+def update_wcs_catalog(sector: int):
+    """Write WCS data of a sector to a Parquet file.
 
     This function is slow (few minutes) because it will download the header
-    of a reference FFI for each sector/camera/ccd combination.
+    of a reference FFI for each camera/ccd combination.
     """
-    if sectors is None:
-        sectors = range(1, SECTORS + 1)
-
-    log.info(f"Writing {WCS_CATALOG}")
     summary = []
-    iterator = itertools.product(sectors, [1, 2, 3, 4], [1, 2, 3, 4])
-    for sector, camera, ccd in tqdm(iterator, len(sectors) * 4 * 4):
+    iterator = itertools.product([1, 2, 3, 4], [1, 2, 3, 4])
+    for camera, ccd in tqdm(
+        iterator, desc=f"Downloading sector {sector} headers", total=16
+    ):
         images = imagelist.list_images(sector=sector, camera=camera, ccd=ccd)
         wcs = images[len(images) // 2].download_wcs().to_header_string(relax=True)
         data = {
@@ -49,14 +49,28 @@ def update_wcs_catalog(sectors: List[int] = None):
         }
         summary.append(data)
     df = pd.DataFrame(summary)
-    df.to_parquet(WCS_CATALOG)
+    path = _wcs_catalog_path(sector)
+    log.info(f"Started writing {path}")
+    df.to_parquet(path)
+    log.info(f"Finished writing {path}")
 
 
 @lru_cache
-def load_wcs_catalog() -> DataFrame:
+def load_wcs_catalog(sector: int = None) -> DataFrame:
     """Reads the DataFrame that contains all WCS data."""
-    log.info(f"Reading {WCS_CATALOG}")
-    return pd.read_parquet(WCS_CATALOG)
+    if sector is None:
+        sector = range(1, SECTORS + 1)
+    else:
+        sector = [sector]
+
+    df = pd.concat([load_one_wcs_catalog(s) for s in sector])
+    return df
+
+
+def load_one_wcs_catalog(sector: int) -> DataFrame:
+    path = _wcs_catalog_path(sector)
+    log.info(f"Reading {path}")
+    return pd.read_parquet(path)
 
 
 @lru_cache(maxsize=4096)

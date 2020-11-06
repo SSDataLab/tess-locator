@@ -1,4 +1,5 @@
 """Implements a faster version of `locate()` using Healpix indexing."""
+import gzip
 import itertools
 import json
 import warnings
@@ -65,7 +66,7 @@ class HealpixLocator:
         if sector is not None:
             sector_time = np.atleast_1d(sector)
 
-        ccdlist = self._skycoord_to_ccdlist(target)
+        ccdlist = self._skycoord_to_ccdlist(crd)
         result = []
         for sctr, camera, ccd in ccdlist:
             if sector_time and sctr not in sector_time:
@@ -89,11 +90,11 @@ class HealpixLocator:
 
 @lru_cache
 def load_healpix_table(dbfile: str = HEALPIX_DB_FILENAME) -> dict:
-    with open(HEALPIX_DB_FILENAME) as fp:
+    with gzip.open(HEALPIX_DB_FILENAME) as fp:
         return json.load(fp, object_hook=lambda d: {int(k): v for k, v in d.items()})
 
 
-def create_healpix_lookup_table(nside: int = None) -> dict:
+def create_healpix_table(nside: int = None) -> dict:
     """Returns a dictionary mapping healpix onto (sector, camera, ccd).
 
     Parameters
@@ -122,11 +123,12 @@ def create_healpix_lookup_table(nside: int = None) -> dict:
     return healpix_lookup
 
 
-def update_healpix_lookup_table(nside: int = None, output_fn: str = None) -> None:
+def update_healpix_table(nside: int = None, output_fn: str = None) -> None:
     """Generates and stores the HEALPix lookup table."""
     if output_fn is None:
         output_fn = HEALPIX_DB_FILENAME
-    log.info(f"Writing {HEALPIX_DB_FILENAME}")
-    healpix_lookup = create_healpix_lookup_table(nside=nside)
-    with open(HEALPIX_DB_FILENAME, "wt") as fp:
+    healpix_lookup = create_healpix_table(nside=nside)
+    log.info(f"Started writing {HEALPIX_DB_FILENAME}")
+    with gzip.open(HEALPIX_DB_FILENAME, "wt") as fp:
         json.dump(healpix_lookup, fp)
+    log.info(f"Finished writing {HEALPIX_DB_FILENAME}")
