@@ -13,7 +13,6 @@ from pathlib import Path
 import pandas as pd
 from astropy.table import Table
 from astropy.time import Time
-from astroquery.utils.tap.core import TapPlus
 from pandas import DataFrame
 
 from . import DATADIR, SECTORS
@@ -24,6 +23,9 @@ log = logging.getLogger(__name__)
 @lru_cache
 def _mast_ffi_query(sector: int) -> Table:
     """Returns a list of all TESS FFIs for a given Sector."""
+    # Local import of astroquery because it is an optional dependency
+    from astroquery.utils.tap.core import TapPlus
+
     mast_tap = TapPlus(url="https://vao.stsci.edu/caomtap/tapservice.aspx")
     adql = f"""SELECT access_url, t_min, t_max FROM obscore
                WHERE obs_collection='TESS' AND dataproduct_type = "image"
