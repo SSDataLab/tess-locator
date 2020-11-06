@@ -1,6 +1,7 @@
 __pycache__
 .eggs
 *.egg-info
+dist/
 
 poetry.lock
 
