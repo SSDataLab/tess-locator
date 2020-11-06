@@ -3,14 +3,15 @@
 The functions in this module serve to populate and query a simple single-file
 data base which holds WCS data for TESS Full Frame Images across all sectors.
 
-WCS DB contains the following columns:
-sector, camera, ccd, begin, end, wcs 
+The WCS catalog is a DataFrame composed of six columns:
+sector, camera, ccd, begin, end, wcs. 
 """
 import itertools
 import warnings
 from functools import lru_cache
 from pathlib import Path
-from typing import Union
+from typing import List, Union
+from tqdm import tqdm
 
 import pandas as pd
 from astropy.time import Time
@@ -23,17 +24,19 @@ from . import DATADIR, SECTORS, imagelist, log
 WCS_CATALOG: Path = DATADIR / Path("tess-wcs-catalog.parquet")
 
 
-def populate_wcs_catalog():
+def update_wcs_catalog(sectors: List[int] = None):
     """Write WCS data of all sectors to a Parquet file.
 
     This function is slow (few minutes) because it will download the header
     of a reference FFI for each sector/camera/ccd combination.
     """
+    if sectors is None:
+        sectors = range(1, SECTORS + 1)
+
     log.info(f"Writing {WCS_CATALOG}")
     summary = []
-    for sector, camera, ccd in itertools.product(
-        range(1, SECTORS + 1), [1, 2, 3, 4], [1, 2, 3, 4]
-    ):
+    iterator = itertools.product(sectors, [1, 2, 3, 4], [1, 2, 3, 4])
+    for sector, camera, ccd in tqdm(iterator, len(sectors) * 4 * 4):
         images = imagelist.list_images(sector=sector, camera=camera, ccd=ccd)
         wcs = images[len(images) // 2].download_wcs().to_header_string(relax=True)
         data = {

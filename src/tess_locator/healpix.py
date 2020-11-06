@@ -107,9 +107,9 @@ def create_healpix_lookup_table(nside: int = None) -> dict:
     hp = HEALPix(nside=nside, frame=ICRS())
     healpix_lookup = defaultdict(list)
 
-    sector = range(1, SECTORS + 1)
-    combinations = itertools.product(sector, [1, 2, 3, 4], [1, 2, 3, 4])
-    for sctr, camera, ccd in tqdm(combinations, total=len(sector) * 4 * 4):
+    sectors = range(1, SECTORS + 1)
+    iterator = itertools.product(sectors, [1, 2, 3, 4], [1, 2, 3, 4])
+    for sctr, camera, ccd in tqdm(iterator, total=len(sectors) * 4 * 4):
         wcs = get_wcs(sector=sctr, camera=camera, ccd=ccd)
         center_crd = wcs.pixel_to_world(np.mean(COLUMN_RANGE), np.mean(ROW_RANGE))
         # Center-to-corner distance of a TESS CCD is approx ~8.5 degrees,
@@ -122,7 +122,7 @@ def create_healpix_lookup_table(nside: int = None) -> dict:
     return healpix_lookup
 
 
-def write_healpix_lookup_table(nside: int = None, output_fn: str = None) -> None:
+def update_healpix_lookup_table(nside: int = None, output_fn: str = None) -> None:
     """Generates and stores the HEALPix lookup table."""
     if output_fn is None:
         output_fn = HEALPIX_DB_FILENAME

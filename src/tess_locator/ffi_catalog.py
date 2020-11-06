@@ -54,7 +54,7 @@ def _ffi_catalog_path(sector: int) -> Path:
     return DATADIR / Path(f"tess-s{sector:04d}-ffi-catalog.parquet")
 
 
-def fetch_ffi_catalog(sector, path=None) -> DataFrame:
+def update_ffi_catalog(sector, path=None) -> DataFrame:
     if path is None:
         path = _ffi_catalog_path(sector=sector)
     if Path(path).exists():
@@ -66,10 +66,10 @@ def fetch_ffi_catalog(sector, path=None) -> DataFrame:
     return df
 
 
-def fetch_all_catalogs():
+def update_all_catalogs():
     for sector in range(1, SECTORS + 1):
         log.info(f"Fetching sector {sector}/{SECTORS}")
-        fetch_ffi_catalog(sector=sector)
+        update_ffi_catalog(sector=sector)
 
 
 @lru_cache

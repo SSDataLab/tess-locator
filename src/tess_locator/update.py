@@ -4,12 +4,16 @@ Usage
 =====
 $ python -m tess_locator.update
 """
-from .healpix import write_healpix_lookup_table
+from .ffi_catalog import update_ffi_catalog
+from .wcs_catalog import update_wcs_catalog
+from .healpix import update_healpix_lookup_table
 
 
-def update():
-    write_healpix_lookup_table()
+def update(sector: int):
+    update_ffi_catalog(sector=sector)
+    update_wcs_catalog(sectors=sector)
+    update_healpix_lookup_table()
 
 
 if __name__ == "__main__":
-    update()
+    update(28)
