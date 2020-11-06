@@ -1,11 +1,19 @@
 [tool.poetry]
 name = "tess-locator"
 version = "0.1.0"
-description = ""
-authors = ["Geert Barentsen <geert@barentsen.be>"]
+description = "Fast offline queries of TESS FFI positions and filenames."
+authors = ["Geert Barentsen <hello@geert.io>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
+astropy = "^4.1"
+pandas = "^1.1.4"
+numpy = "^1.19.4"
+tqdm = "^4.51.0"
+attr = "^0.3.1"
+backoff = "^1.10.0"
+httpx = "^0.16.1"
+typer = "^0.3.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
