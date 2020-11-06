@@ -2,18 +2,29 @@
 name = "tess-locator"
 version = "0.1.0"
 description = "Fast offline queries of TESS FFI positions and filenames."
-authors = ["Geert Barentsen <hello@geert.io>"]
+license = "MIT"
+authors = ["Geert Barentsen <hello@geert.io>",
+           "Christina Hedges",
+           "Jessie Dotson"]
+readme = "README.rst"
+homepage = "https://github.com/SSDataLab/tess-locator"
+repository = "https://github.com/SSDataLab/tess-locator"
+keywords = ["NASA, TESS, Astronomy"]
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Astronomy",
+]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-astropy = "^4.1"
-pandas = "^1.1.4"
-numpy = "^1.19.4"
-tqdm = "^4.51.0"
-attr = "^0.3.1"
-backoff = "^1.10.0"
-httpx = "^0.16.1"
-typer = "^0.3.2"
+astropy = ">= 4.0"
+pandas = ">= 1.0"
+numpy = ">= 1.19"
+tqdm = ">= 4.51"
+backoff = ">= 1.10.0"
+httpx = ">= 0.16.1"
+typer = ">= 0.3.2"
+attrs = ">= 20.3.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
