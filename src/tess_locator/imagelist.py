@@ -19,7 +19,7 @@ from astropy.utils.exceptions import AstropyUserWarning
 from astropy.wcs import WCS
 from pandas import DataFrame
 
-from . import catalog, log
+from . import ffi_catalog, log
 
 FFI_FILENAME_REGEX = r".*-s(\d+)-(\d)-(\d)-.*"
 FFI_URL_PREFIX = "https://mast.stsci.edu/portal/Download/file?uri=mast:TESS/product/"
@@ -124,7 +124,7 @@ class TessImageList(UserList):
 def list_images(
     sector: int, camera: int = None, ccd: int = None, time: Union[str, Time] = None
 ) -> TessImageList:
-    df = catalog.load_ffi_catalog(sector=sector)
+    df = ffi_catalog.load_ffi_catalog(sector=sector)
     if camera:
         df = df[df.camera == camera]
     if ccd:

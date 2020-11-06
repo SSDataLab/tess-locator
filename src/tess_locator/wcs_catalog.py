@@ -20,16 +20,16 @@ from pandas import DataFrame
 from . import DATADIR, SECTORS, imagelist, log
 
 # Where do we store all the WCS data?
-WCS_DB: Path = DATADIR / Path("tess-wcs-all-sectors.parquet")
+WCS_CATALOG: Path = DATADIR / Path("tess-wcs-catalog.parquet")
 
 
-def populate_wcs_db():
+def populate_wcs_catalog():
     """Write WCS data of all sectors to a Parquet file.
 
     This function is slow (few minutes) because it will download the header
     of a reference FFI for each sector/camera/ccd combination.
     """
-    log.info(f"Writing {WCS_DB}")
+    log.info(f"Writing {WCS_CATALOG}")
     summary = []
     for sector, camera, ccd in itertools.product(
         range(1, SECTORS + 1), [1, 2, 3, 4], [1, 2, 3, 4]
@@ -46,20 +46,20 @@ def populate_wcs_db():
         }
         summary.append(data)
     df = pd.DataFrame(summary)
-    df.to_parquet(WCS_DB)
+    df.to_parquet(WCS_CATALOG)
 
 
 @lru_cache
-def load_wcs_db() -> DataFrame:
+def load_wcs_catalog() -> DataFrame:
     """Reads the DataFrame that contains all WCS data."""
-    log.info(f"Reading {WCS_DB}")
-    return pd.read_parquet(WCS_DB)
+    log.info(f"Reading {WCS_CATALOG}")
+    return pd.read_parquet(WCS_CATALOG)
 
 
 @lru_cache(maxsize=4096)
 def get_wcs(sector: int, camera: int, ccd: int) -> WCS:
     """Returns a WCS object for a specific FFI ccd."""
-    df = load_wcs_db()
+    df = load_wcs_catalog()
     wcsstr = (
         df.query(f"sector == {sector} & camera == {camera} & ccd == {ccd}").iloc[0].wcs
     )
@@ -75,7 +75,7 @@ def get_wcs(sector: int, camera: int, ccd: int) -> WCS:
 @lru_cache
 def get_sector_dates() -> DataFrame:
     """Returns a DataFrame with sector, begin, end."""
-    db = load_wcs_db()
+    db = load_wcs_catalog()
     begin = db.groupby("sector")["begin"].min()
     end = db.groupby("sector")["end"].max()
     return begin.to_frame().join(end)

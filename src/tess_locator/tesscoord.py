@@ -9,7 +9,7 @@ from pandas import DataFrame
 
 from . import list_images
 from .imagelist import TessImageList
-from .wcsdb import get_wcs
+from .wcs_catalog import get_wcs
 
 # The science area of the TESS CCDs are bounded by:
 # lower left corner: (column, row) = (45, 1)

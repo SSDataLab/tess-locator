@@ -9,7 +9,7 @@ from astropy.wcs import NoConvergence
 
 from . import SECTORS, TessCoord, TessCoordList
 from .healpix import HealpixLocator
-from .wcsdb import get_wcs, time_to_sector
+from .wcs_catalog import get_wcs, time_to_sector
 
 
 def locate(

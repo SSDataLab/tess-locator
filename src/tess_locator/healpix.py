@@ -17,7 +17,7 @@ from tqdm import tqdm
 
 from . import DATADIR, SECTORS, TessCoord, TessCoordList, log
 from .tesscoord import COLUMN_RANGE, ROW_RANGE
-from .wcsdb import get_wcs, time_to_sector
+from .wcs_catalog import get_wcs, time_to_sector
 
 HEALPIX_NSIDE = 64
 HEALPIX_DB_FILENAME = DATADIR / Path("healpix-index.json.gz")
