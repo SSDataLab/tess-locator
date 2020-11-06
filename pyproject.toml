@@ -25,9 +25,12 @@ backoff = ">= 1.10.0"
 httpx = ">= 0.16.1"
 typer = ">= 0.3.2"
 attrs = ">= 20.3.0"
+astropy-healpix = ">= 0.5"
+pyarrow = ">= 1.0.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
+astroquery = "^0.4.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
