@@ -88,7 +88,7 @@ class HealpixLocator:
         return TessCoordList(result)
 
 
-@lru_cache
+@lru_cache()
 def load_healpix_table(dbfile: str = HEALPIX_DB_FILENAME) -> dict:
     with gzip.open(HEALPIX_DB_FILENAME) as fp:
         return json.load(fp, object_hook=lambda d: {int(k): v for k, v in d.items()})

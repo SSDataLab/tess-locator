@@ -20,7 +20,7 @@ from . import DATADIR, SECTORS
 log = logging.getLogger(__name__)
 
 
-@lru_cache
+@lru_cache()
 def _mast_ffi_query(sector: int) -> Table:
     """Returns a list of all TESS FFIs for a given Sector."""
     # Local import of astroquery because it is an optional dependency
@@ -79,7 +79,7 @@ def update_all_catalogs():
         update_ffi_catalog(sector=sector)
 
 
-@lru_cache
+@lru_cache()
 def load_ffi_catalog(sector: int) -> DataFrame:
     path = _ffi_catalog_path(sector=sector)
     log.info(f"Reading {path}")

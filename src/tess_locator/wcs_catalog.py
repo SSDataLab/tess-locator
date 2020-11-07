@@ -55,7 +55,7 @@ def update_wcs_catalog(sector: int):
     log.info(f"Finished writing {path}")
 
 
-@lru_cache
+@lru_cache()
 def load_wcs_catalog(sector: int = None) -> DataFrame:
     """Reads the DataFrame that contains all WCS data."""
     if sector is None:
@@ -89,7 +89,7 @@ def get_wcs(sector: int, camera: int, ccd: int) -> WCS:
     return wcs
 
 
-@lru_cache
+@lru_cache()
 def get_sector_dates() -> DataFrame:
     """Returns a DataFrame with sector, begin, end."""
     db = load_wcs_catalog()
@@ -98,7 +98,7 @@ def get_sector_dates() -> DataFrame:
     return begin.to_frame().join(end)
 
 
-@lru_cache
+@lru_cache()
 def time_to_sector(time: Union[str, Time]) -> int:
     """Returns the sector number for a given timestamp."""
     if isinstance(time, Time):

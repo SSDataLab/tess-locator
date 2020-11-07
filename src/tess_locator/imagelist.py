@@ -48,7 +48,7 @@ class TessImage:
         """Returns the download URL for the image at MAST."""
         return FFI_URL_PREFIX + self.filename
 
-    @lru_cache
+    @lru_cache()
     @backoff.on_exception(backoff.expo, Exception, max_tries=3)
     def download_header(self, ext: int = 1, nbytes: int = 50000) -> Header:
         """Returns the FITS header.
