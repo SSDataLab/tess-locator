@@ -11,12 +11,12 @@ import warnings
 from functools import lru_cache
 from pathlib import Path
 from typing import Union
-from tqdm import tqdm
 
 import pandas as pd
 from astropy.time import Time
 from astropy.wcs import WCS
 from pandas import DataFrame
+from tqdm import tqdm
 
 from . import DATADIR, SECTORS, imagelist, log
 

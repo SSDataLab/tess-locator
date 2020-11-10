@@ -4,9 +4,9 @@
 e.g. calling locate for `time_to_sector(time=2019-09-12 00:00:00.000, ra=	214.742331, dec=	18.956380)`
 should return empty result.
 """
-from astroquery.mast import Tesscut
 from astropy.coordinates import SkyCoord
 from astropy.time import Time
+from astroquery.mast import Tesscut
 
 from tess_locator import locate
 
@@ -22,7 +22,7 @@ def test_pi_men():
     assert our_result_df.equals(mast_result_df)
     # Can we search by passing a string?
     our_result2 = locate("Pi Men")
-    assert our_result == our_result2
+    assert our_result.to_pandas().equals(our_result2.to_pandas())
 
 
 def test_locate_time():

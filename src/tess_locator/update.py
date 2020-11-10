@@ -6,11 +6,10 @@ $ python -m tess_locator.update SECTOR
 """
 import typer
 
+from . import log
 from .ffi_catalog import update_ffi_catalog
 from .healpix import update_healpix_table
 from .wcs_catalog import update_wcs_catalog
-
-from . import log
 
 
 def main(sector: int, overwrite: bool = False):
