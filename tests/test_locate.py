@@ -21,8 +21,8 @@ def test_pi_men():
     mast_result_df = mast_result[["sector", "camera", "ccd"]].to_pandas()
     assert our_result_df.equals(mast_result_df)
     # Can we search by passing a string?
-    our_result2 = locate("Pi Men")
-    assert our_result.to_pandas().equals(our_result2.to_pandas())
+    our_result_df2 = locate("Pi Men").to_pandas()[["sector", "camera", "ccd"]]
+    assert our_result_df.equals(our_result_df2)
 
 
 def test_locate_time():
