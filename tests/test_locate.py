@@ -1,10 +1,12 @@
 """TODO:
-Ensure times during in-between sector gaps don't return results,
+* Ensure we handle passing a datetime object to `time` gracefully.
+* Ensure times during in-between sector gaps don't return results,
 e.g. calling locate for `time_to_sector(time=2019-09-12 00:00:00.000, ra=	214.742331, dec=	18.956380)`
 should return empty result.
 """
 from astroquery.mast import Tesscut
 from astropy.coordinates import SkyCoord
+from astropy.time import Time
 
 from tess_locator import locate
 
@@ -21,3 +23,10 @@ def test_pi_men():
     # Can we search by passing a string?
     our_result2 = locate("Pi Men")
     assert our_result == our_result2
+
+
+def test_locate_time():
+    """Ensure a time argument can be passed."""
+    crd = SkyCoord(ra=84.291188, dec=-80.46911982, unit="deg")
+    assert locate(crd, time="2018-08-01")[0].sector == 1
+    assert locate(crd, time=Time("2018-08-01"))[0].sector == 1

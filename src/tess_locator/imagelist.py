@@ -120,7 +120,7 @@ class TessImageList(UserList):
         return cls(series.values)
 
 
-@lru_cache
+@lru_cache()
 def list_images(
     sector: int, camera: int = None, ccd: int = None, time: Union[str, Time] = None
 ) -> TessImageList:
