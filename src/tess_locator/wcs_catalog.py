@@ -109,7 +109,13 @@ def time_to_sector(time: Time) -> np.array:
     time_input = pd.DataFrame(np.atleast_1d(time))
 
     sector_dates = get_sector_dates()
-    sectors = time_input.apply(lambda t: sector_dates.index.values[(sector_dates.begin.values <= t.values) & (sector_dates.end.values >= t.values)], axis=1)
+    sectors = time_input.apply(
+        lambda t: sector_dates.index.values[
+            (sector_dates.begin.values <= t.values)
+            & (sector_dates.end.values >= t.values)
+        ],
+        axis=1,
+    )
     # There should be one sector result per row; return -1 otherwise
     result = sectors.apply(lambda s: s[0] if len(s) > 0 else -1)
     return result.values
