@@ -98,7 +98,6 @@ def get_sector_dates() -> DataFrame:
     return begin.to_frame().join(end)
 
 
-@lru_cache()
 def time_to_sector(time: Union[str, Time]) -> int:
     """Returns the sector number for a given timestamp."""
     if isinstance(time, Time):

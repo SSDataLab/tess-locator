@@ -73,6 +73,11 @@ class TessCoordList(UserList):
             x.insert(4, "...")
         return f"List of {len(self)} coordinates\n ↳[" + "\n   ".join(x) + f"]"
 
+    def __eq__(self, obj):
+        return isinstance(obj, self.__class__) and self.to_pandas().equals(
+            obj.to_pandas()
+        )
+
     def to_pandas(self) -> DataFrame:
         data = [
             {

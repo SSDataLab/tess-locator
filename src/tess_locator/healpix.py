@@ -6,7 +6,7 @@ import warnings
 from collections import defaultdict
 from functools import lru_cache
 from pathlib import Path
-from typing import Union
+from typing import Union, List
 
 import numpy as np
 from astropy import units as u
@@ -39,52 +39,61 @@ class HealpixLocator:
         because it is approximated using healpix indexing.
         """
         # Note: `lonlat_to_healpix` seems a factor 2x faster than
-        # `skycoord_to_healpix`, which is why we use it here.
+        # `skycoord_to_healpix`, which is why we use it here.i
         idx = self.hp.lonlat_to_healpix(crd.ra, crd.dec)
-        return self.db.get(idx, [])
+        idx = np.atleast_1d(idx)
+        return [self.db.get(key, []) for key in idx]
 
     def locate(
         self,
-        target: Union[str, SkyCoord],
-        time: Union[str, Time] = None,
-        sector: int = None,
+        target: Union[SkyCoord, str],
+        time: Union[Time, str, List[str]] = None,
+        sector: Union[int, List[int]] = None,
     ) -> TessCoordList:
+        # Allow the coordinate to be instantiated from a string
         if isinstance(target, SkyCoord):
             crd = target
         else:
             crd = SkyCoord.from_name(target)
 
-        if crd.shape != ():
-            raise ValueError("Only single-valued SkyCoord objects are supported.")
+        # Ensure `crd` is iterable
+        if crd.isscalar:
+            crd = crd.reshape((1,))
 
-        sector_time = None
+        # If `time` is given, convert it to a list of sectors
         if time:
-            sector_time = [time_to_sector(time)]
-            if sector_time is None:
-                return TessCoordList([])
-
-        if sector is not None:
-            sector_time = np.atleast_1d(sector)
+            time = np.atleast_1d(time)
+            if len(crd) != len(time):
+                raise ValueError("`target` and `time` must have matching lengths")
+            sector = [time_to_sector(t) for t in time]
+        else:
+            # Else, ensure `sector` is iterable
+            sector = np.atleast_1d(sector)
+            if len(crd) != len(sector):
+                raise ValueError("`target` and `sector` must have matching lengths")
 
         ccdlist = self._skycoord_to_ccdlist(crd)
         result = []
-        for sctr, camera, ccd in ccdlist:
-            if sector_time and sctr not in sector_time:
-                continue
-            wcs = get_wcs(sector=sctr, camera=camera, ccd=ccd)
-            try:
-                with warnings.catch_warnings():
-                    warnings.filterwarnings(
-                        "ignore", message="All-NaN slice encountered"
-                    )
-                    # Using `wcs_` instead of `all_world2pix` would be faster but introduce errors >20px
-                    pixel = wcs.all_world2pix(crd.ra, crd.dec, 1, tolerance=0.1)
-                    tesscrd = TessCoord(
-                        sctr, camera, ccd, column=pixel[0], row=pixel[1]
-                    )
-                    result.append(tesscrd)
-            except (NoConvergence, ValueError):
-                pass
+        for idx in range(len(crd)):
+            for sctr, camera, ccd in ccdlist[idx]:
+                if sector[idx] and sctr not in np.atleast_1d(sector[idx]):
+                    continue
+                wcs = get_wcs(sector=sctr, camera=camera, ccd=ccd)
+                try:
+                    with warnings.catch_warnings():
+                        warnings.filterwarnings(
+                            "ignore", message="All-NaN slice encountered"
+                        )
+                        # Using `wcs_` instead of `all_world2pix` would be faster but introduce errors >20px
+                        pixel = wcs.all_world2pix(
+                            crd[idx].ra, crd[idx].dec, 1, tolerance=0.1
+                        )
+                        tesscrd = TessCoord(
+                            sctr, camera, ccd, column=pixel[0], row=pixel[1]
+                        )
+                        result.append(tesscrd)
+                except (NoConvergence, ValueError):
+                    pass
         return TessCoordList(result)
 
 

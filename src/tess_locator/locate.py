@@ -1,6 +1,6 @@
 import itertools
 import warnings
-from typing import Union
+from typing import Union, List
 
 import numpy as np
 from astropy.coordinates import SkyCoord
@@ -13,7 +13,9 @@ from .wcs_catalog import get_wcs, time_to_sector
 
 
 def locate(
-    target: Union[str, SkyCoord], time: Union[str, Time] = None, sector: int = None
+    target: Union[SkyCoord, str],
+    time: Union[Time, str, List[str]] = None,
+    sector: Union[int, List[int]] = None
 ) -> TessCoordList:
     hloc = HealpixLocator()
     return hloc.locate(target=target, time=time, sector=sector)
