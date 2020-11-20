@@ -97,7 +97,7 @@ class TessCoordList(UserList):
                 "ccd": c.ccd,
                 "column": c.column,
                 "row": c.row,
-                "time": c.time.iso if c.time else None,
+                "time": c.time,
             }
             for c in self
         ]
