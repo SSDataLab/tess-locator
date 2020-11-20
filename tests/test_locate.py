@@ -66,3 +66,23 @@ def test_locate_time():
     crd = SkyCoord(ra=84.291188, dec=-80.46911982, unit="deg")
     assert locate(crd, time="2018-08-01")[0].sector == 1
     assert locate(crd, time=Time("2018-08-01"))[0].sector == 1
+
+    # Ensure time-based location is correct for a known position;
+    # the following coordinate is known to have been observed in Sector 17:
+    crd = SkyCoord(26., 21., unit='deg')
+    # It cannot have been observed prior to the launch of TESS
+    assert len(locate(crd, time="2010-06-01")) == 0
+    # It cannot have been observed in 2018
+    assert len(locate(crd, time="2018-11-01")) == 0
+    # Instead, it was observed during sector 17
+    assert len(locate(crd, sector=17)) == 1
+    # November 1, 2019, fell during sector 17
+    loc = locate(crd, time="2019-11-01")
+    assert len(loc) == 1
+    assert loc[0].sector == 17
+    assert loc[0].camera == 1
+    assert loc[0].ccd == 4
+    # Can exactly one image be found?
+    images = loc[0].get_images()
+    assert len(images) == 1
+    assert images[0].filename == "tess2019304232925-s0017-1-4-0161-s_ffic.fits"

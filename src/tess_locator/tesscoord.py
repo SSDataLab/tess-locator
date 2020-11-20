@@ -54,11 +54,15 @@ class TessCoord:
             )
 
     def get_images(self, time: Union[str, Time] = None) -> TessImageList:
+        """Returns the list of FFI images which include the coordinate."""
+        if time is None:
+            time = self.time
         return list_images(
             sector=self.sector, camera=self.camera, ccd=self.ccd, time=time
         )
 
     def to_skycoord(self) -> SkyCoord:
+        """Convert the TESS coordinate to an (ra, dec) sky coordinate."""
         wcs = get_wcs(self.sector, self.camera, self.ccd)
         crd = wcs.pixel_to_world(self.column, self.row)
         crd.obstime = self.time

@@ -99,7 +99,10 @@ def get_sector_dates() -> DataFrame:
 
 
 def time_to_sector(time: Union[str, Time]) -> int:
-    """Returns the sector number for a given timestamp."""
+    """Returns the sector number for a given timestamp.
+
+    Returns -1 otherwise.
+    """
     if isinstance(time, Time):
         time = time.iso
 
@@ -108,4 +111,4 @@ def time_to_sector(time: Union[str, Time]) -> int:
         if (time >= row.begin) & (time <= row.end):
             return row.Index
 
-    return None
+    return -1
