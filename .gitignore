@@ -1,3 +1,5 @@
+.DS_Store
+
 __pycache__
 .eggs
 *.egg-info
@@ -11,3 +13,4 @@ sandbox
 *.code-workspace
 .ipynb_checkpoints/
 .coverage
+htmlcov
