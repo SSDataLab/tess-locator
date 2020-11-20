@@ -31,17 +31,27 @@ class TessImage:
     begin: str = attr.ib(default=None)
     end: str = attr.ib(default=None)
 
+    def _parse_filename(self) -> dict:
+        search = re.search(FFI_FILENAME_REGEX, self.filename)
+        if not search:
+            raise ValueError(f"Unrecognized FFI filename: {self.filename}")
+        return {
+            'sector': int(search.group(1)),
+            'camera': int(search.group(2)),
+            'ccd': int(search.group(3)),
+        }
+
     @property
     def sector(self) -> int:
-        return int(re.search(FFI_FILENAME_REGEX, self.filename).group(1))
+        return self._parse_filename()['sector']
 
     @property
     def camera(self) -> int:
-        return int(re.search(FFI_FILENAME_REGEX, self.filename).group(2))
+        return self._parse_filename()['camera']
 
     @property
     def ccd(self) -> int:
-        return int(re.search(FFI_FILENAME_REGEX, self.filename).group(3))
+        return self._parse_filename()['ccd']
 
     @property
     def url(self) -> str:

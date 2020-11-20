@@ -22,7 +22,7 @@ def locate(
 
 
 def _locate_slow(
-    target: Union[str, SkyCoord], time: Union[str, Time] = None, sector: int = None
+    target, time=None, sector=None
 ) -> TessCoordList:
     """Returns a `TessCoordList.
 

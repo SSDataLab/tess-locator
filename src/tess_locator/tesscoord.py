@@ -20,6 +20,10 @@ COLUMN_RANGE = [44.5, 2092.5]
 ROW_RANGE = [0.5, 2048.5]
 
 
+def _optional_time_converter(time) -> Time:
+    return Time(time) if time else None
+
+
 @attr.s(slots=True)
 class TessCoord:
     sector: int = attr.ib()
@@ -32,7 +36,7 @@ class TessCoord:
         converter=float, repr=lambda value: f"{value:.1f}", default=np.nan
     )
     time: Time = attr.ib(
-        converter=lambda value: Time(value) if value else None,
+        converter=_optional_time_converter,
         repr=lambda value: f"{value.iso[:19]}" if value else "None",
         default=None,
     )

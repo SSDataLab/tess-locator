@@ -7,8 +7,8 @@ SECTORS = 28
 # Where does this package store its embedded data?
 from pathlib import Path
 
-PACKAGEDIR = Path(__file__).parent.absolute()
-DATADIR = PACKAGEDIR / "data"
+PACKAGEDIR: Path = Path(__file__).parent.absolute()
+DATADIR: Path = PACKAGEDIR / "data"
 
 # Configure logging
 import logging

@@ -6,7 +6,7 @@ import warnings
 from collections import defaultdict
 from functools import lru_cache
 from pathlib import Path
-from typing import Union, List
+from typing import Union, Iterable
 
 import numpy as np
 from astropy import units as u
@@ -46,22 +46,23 @@ class HealpixLocator:
 
     def locate(
         self,
-        target: Union[SkyCoord, str],
-        time: Union[Time, str, List[str]] = None,
-        sector: Union[int, List[int]] = None,
+        target: SkyCoord,
+        time: Time = None,
+        sector: Union[int, Iterable[int]] = None,
     ) -> TessCoordList:
         # Allow the coordinate to be instantiated from a string
-        if isinstance(target, SkyCoord):
-            crd = target
-        else:
+        if isinstance(target, str):
             crd = SkyCoord.from_name(target)
-
-        if time and not isinstance(time, Time):
-            time = Time(time)
-
+        else:
+            crd = target
         # Ensure `crd` is iterable
         if crd.isscalar:
             crd = crd.reshape((1,))
+
+        # Allow time to be instantiated from a string
+        if time and not isinstance(time, Time):
+            time = Time(time)
+        # Ensure `time` is iterable
         if time and time.isscalar:
             time = time.reshape((1,))
 
@@ -69,18 +70,18 @@ class HealpixLocator:
         if time:
             if len(crd) != len(time):
                 raise ValueError("`target` and `time` must have matching lengths")
-            sector = time_to_sector(time)
+            sectors_to_search = time_to_sector(time)
         else:
             # Else, ensure `sector` is iterable
-            sector = np.atleast_1d(sector)
-            if len(crd) != len(sector):
+            sectors_to_search = np.atleast_1d(sector)
+            if len(crd) != len(sectors_to_search):
                 raise ValueError("`target` and `sector` must have matching lengths")
 
         ccdlist = self._skycoord_to_ccdlist(crd)
         result = []
         for idx in range(len(crd)):
             for sctr, camera, ccd in ccdlist[idx]:
-                if sector[idx] and sctr not in np.atleast_1d(sector[idx]):
+                if sectors_to_search[idx] and sctr not in np.atleast_1d(sectors_to_search[idx]):
                     continue
                 wcs = get_wcs(sector=sctr, camera=camera, ccd=ccd)
                 try:
@@ -104,7 +105,7 @@ class HealpixLocator:
 
 
 @lru_cache()
-def load_healpix_table(dbfile: str = HEALPIX_DB_FILENAME) -> dict:
+def load_healpix_table(dbfile: Path = HEALPIX_DB_FILENAME) -> dict:
     with gzip.open(HEALPIX_DB_FILENAME) as fp:
         return json.load(fp, object_hook=lambda d: {int(k): v for k, v in d.items()})
 
@@ -138,7 +139,7 @@ def create_healpix_table(nside: int = None) -> dict:
     return healpix_lookup
 
 
-def update_healpix_table(nside: int = None, output_fn: str = None) -> None:
+def update_healpix_table(nside: int = None, output_fn: Path = None) -> None:
     """Generates and stores the HEALPix lookup table."""
     if output_fn is None:
         output_fn = HEALPIX_DB_FILENAME

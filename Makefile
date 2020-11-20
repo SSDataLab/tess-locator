@@ -1,25 +1,32 @@
-.PHONY: all clean lint type test test-cov black isort
+.PHONY: all clean test coverage flake8 black mypy isort
 
 CMD:=poetry run
 PYMODULE:=src
 TESTS:=tests
 
-all: type test lint
+# Run all the checks which do not change files
+all: mypy test flake8
 
-lint:
-	$(CMD) flake8 $(PYMODULE) $(TESTS) --max-line-length=127
-
-type:
-	$(CMD) mypy $(PYMODULE) $(TESTS)
-
+# Run the unit tests using `pytest`
 test:
-	$(CMD) pytest --cov=$(PYMODULE) $(TESTS)
+	$(CMD) pytest $(PYMODULE) $(TESTS)
 
-test-cov:
+# Generate a unit test coverage report using `pytest-cov`
+coverage:
 	$(CMD) pytest --cov=$(PYMODULE) $(TESTS) --cov-report html
 
+# Lint the code using `flake8`
+flake8:
+	$(CMD) flake8 $(PYMODULE) $(TESTS) --max-line-length=127
+
+# Automatically format the code using `black`
 black:
 	$(CMD) black $(PYMODULE) $(TESTS)
 
+# Perform static type checking using `mypy`
+mypy:
+	$(CMD) mypy $(PYMODULE) $(TESTS)
+
+# Order the imports using `isort`
 isort:
 	$(CMD) isort $(PYMODULE) $(TESTS)

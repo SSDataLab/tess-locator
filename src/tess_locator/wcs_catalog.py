@@ -10,7 +10,7 @@ import itertools
 import warnings
 from functools import lru_cache
 from pathlib import Path
-from typing import Union
+from typing import Union, Iterable
 import numpy as np
 
 import pandas as pd
@@ -57,14 +57,14 @@ def update_wcs_catalog(sector: int):
 
 
 @lru_cache()
-def load_wcs_catalog(sector: int = None) -> DataFrame:
+def load_wcs_catalog(sector: Union[int, Iterable[int]] = None) -> DataFrame:
     """Reads the DataFrame that contains all WCS data."""
     if sector is None:
-        sector = range(1, SECTORS + 1)
+        sectors_to_load = range(1, SECTORS + 1)
     else:
-        sector = [sector]
+        sectors_to_load = np.atleast_1d(sector)
 
-    df = pd.concat([load_one_wcs_catalog(s) for s in sector])
+    df = pd.concat([load_one_wcs_catalog(s) for s in sectors_to_load])
     return df
 
 
