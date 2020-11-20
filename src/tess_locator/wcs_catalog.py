@@ -11,6 +11,7 @@ import warnings
 from functools import lru_cache
 from pathlib import Path
 from typing import Union
+import numpy as np
 
 import pandas as pd
 from astropy.time import Time
@@ -98,7 +99,7 @@ def get_sector_dates() -> DataFrame:
     return begin.to_frame().join(end)
 
 
-def time_to_sector(time: Union[str, Time]) -> int:
+def time_to_sector(time: Time) -> np.array:
     """Returns the sector number for a given timestamp.
 
     Returns -1 otherwise.
@@ -107,8 +108,7 @@ def time_to_sector(time: Union[str, Time]) -> int:
         time = time.iso
 
     dates = get_sector_dates()
-    for row in dates.itertuples():
-        if (time >= row.begin) & (time <= row.end):
-            return row.Index
-
-    return -1
+    df = pd.DataFrame(np.atleast_1d(time))
+    idx = df.apply(lambda x: np.argwhere((dates.begin.values <= x.values) & (dates.end.values >= x.values)), axis=1)
+    result = idx.apply(lambda x: dates.index[x[0][0]] if len(x) > 0 else -1)
+    return result.values
