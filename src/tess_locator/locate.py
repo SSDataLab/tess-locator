@@ -15,7 +15,7 @@ from .wcs_catalog import get_wcs, time_to_sector
 def locate(
     target: Union[SkyCoord, str],
     time: Union[Time, str, List[str]] = None,
-    sector: Union[int, List[int]] = None
+    sector: Union[int, List[int]] = None,
 ) -> TessCoordList:
     hloc = HealpixLocator()
     return hloc.locate(target=target, time=time, sector=sector)

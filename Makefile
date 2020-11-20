@@ -18,5 +18,8 @@ test:
 test-cov:
 	$(CMD) pytest --cov=$(PYMODULE) $(TESTS) --cov-report html
 
+black:
+	$(CMD) black $(PYMODULE) $(TESTS)
+
 isort:
 	$(CMD) isort $(PYMODULE) $(TESTS)

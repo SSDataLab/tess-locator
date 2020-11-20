@@ -55,8 +55,12 @@ def test_scalar_arguments():
 
     # Do we recover the correct results?
     locate_by_time = locate(crd, time=time).to_pandas()[["sector", "camera", "ccd"]]
-    locate_by_time_object = locate(crd, time=Time(time)).to_pandas()[["sector", "camera", "ccd"]]
-    locate_by_sector = locate(crd, sector=sector).to_pandas()[["sector", "camera", "ccd"]]
+    locate_by_time_object = locate(crd, time=Time(time)).to_pandas()[
+        ["sector", "camera", "ccd"]
+    ]
+    locate_by_sector = locate(crd, sector=sector).to_pandas()[
+        ["sector", "camera", "ccd"]
+    ]
     assert locate_by_time.equals(locate_by_sector)
     assert locate_by_time.equals(locate_by_time_object)
 
@@ -69,7 +73,7 @@ def test_locate_time():
 
     # Ensure time-based location is correct for a known position;
     # the following coordinate is known to have been observed in Sector 17:
-    crd = SkyCoord(26., 21., unit='deg')
+    crd = SkyCoord(26.0, 21.0, unit="deg")
     # It cannot have been observed prior to the launch of TESS
     assert len(locate(crd, time="2010-06-01")) == 0
     # It cannot have been observed in 2018
