@@ -17,6 +17,14 @@ def locate(
     time: Union[Time, str, List[str]] = None,
     sector: Union[int, List[int]] = None,
 ) -> TessCoordList:
+    # Allow the target coordinate to be instantiated from a string
+    if isinstance(target, str):
+        target = SkyCoord.from_name(target)
+
+    # Allow time to be instantiated from a string
+    if time and not isinstance(time, Time):
+        time = Time(time)
+
     hloc = HealpixLocator()
     return hloc.locate(target=target, time=time, sector=sector)
 

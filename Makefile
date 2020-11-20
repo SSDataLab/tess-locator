@@ -1,14 +1,14 @@
-.PHONY: all clean test coverage flake8 black mypy isort
+.PHONY: all clean pytest coverage flake8 black mypy isort
 
 CMD:=poetry run
 PYMODULE:=src
 TESTS:=tests
 
 # Run all the checks which do not change files
-all: mypy test flake8
+all: mypy pytest flake8
 
 # Run the unit tests using `pytest`
-test:
+pytest:
 	$(CMD) pytest $(PYMODULE) $(TESTS)
 
 # Generate a unit test coverage report using `pytest-cov`
@@ -17,7 +17,7 @@ coverage:
 
 # Lint the code using `flake8`
 flake8:
-	$(CMD) flake8 $(PYMODULE) $(TESTS) --max-line-length=127
+	$(CMD) flake8 $(PYMODULE) $(TESTS) --max-line-length=127 --max-complexity=12 --show-source --count
 
 # Automatically format the code using `black`
 black:

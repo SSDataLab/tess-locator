@@ -21,6 +21,7 @@ from pandas import DataFrame
 
 from . import ffi_catalog, log
 
+
 FFI_FILENAME_REGEX = r".*-s(\d+)-(\d)-(\d)-.*"
 FFI_URL_PREFIX = "https://mast.stsci.edu/portal/Download/file?uri=mast:TESS/product/"
 

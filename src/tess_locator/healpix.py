@@ -50,36 +50,26 @@ class HealpixLocator:
         time: Time = None,
         sector: Union[int, Iterable[int]] = None,
     ) -> TessCoordList:
-        # Allow the coordinate to be instantiated from a string
-        if isinstance(target, str):
-            crd = SkyCoord.from_name(target)
-        else:
-            crd = target
-        # Ensure `crd` is iterable
-        if crd.isscalar:
-            crd = crd.reshape((1,))
-
-        # Allow time to be instantiated from a string
-        if time and not isinstance(time, Time):
-            time = Time(time)
-        # Ensure `time` is iterable
+        # Ensure `crd` and `time` are iterable
+        if target.isscalar:
+            target = target.reshape((1,))
         if time and time.isscalar:
             time = time.reshape((1,))
 
         # If `time` is given, convert it to a list of sectors
         if time:
-            if len(crd) != len(time):
+            if len(target) != len(time):
                 raise ValueError("`target` and `time` must have matching lengths")
             sectors_to_search = time_to_sector(time)
         else:
             # Else, ensure `sector` is iterable
             sectors_to_search = np.atleast_1d(sector)
-            if len(crd) != len(sectors_to_search):
+            if len(target) != len(sectors_to_search):
                 raise ValueError("`target` and `sector` must have matching lengths")
 
-        ccdlist = self._skycoord_to_ccdlist(crd)
+        ccdlist = self._skycoord_to_ccdlist(target)
         result = []
-        for idx in range(len(crd)):
+        for idx in range(len(target)):
             for sctr, camera, ccd in ccdlist[idx]:
                 if sectors_to_search[idx] and sctr not in np.atleast_1d(
                     sectors_to_search[idx]
@@ -93,7 +83,7 @@ class HealpixLocator:
                         )
                         # Using `wcs_` instead of `all_world2pix` would be faster but introduce errors >20px
                         pixel = wcs.all_world2pix(
-                            crd[idx].ra, crd[idx].dec, 1, tolerance=0.1
+                            target[idx].ra, target[idx].dec, 1, tolerance=0.1
                         )
                         tesscrd = TessCoord(
                             sctr, camera, ccd, column=pixel[0], row=pixel[1]
