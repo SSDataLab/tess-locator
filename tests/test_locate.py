@@ -54,10 +54,11 @@ def test_scalar_arguments():
         locate(crd, sector=sector[:2])
 
     # Do we recover the correct results?
-    assert locate(crd, time=time) == locate(crd, sector=sector)
-    assert [tesscoord.sector for tesscoord in locate(crd, time=time)] == sector
-    # Can time be a Time object?
-    assert locate(crd, time=Time(time)) == locate(crd, sector=sector)
+    locate_by_time = locate(crd, time=time).to_pandas()[["sector", "camera", "ccd"]]
+    locate_by_time_object = locate(crd, time=Time(time)).to_pandas()[["sector", "camera", "ccd"]]
+    locate_by_sector = locate(crd, sector=sector).to_pandas()[["sector", "camera", "ccd"]]
+    assert locate_by_time.equals(locate_by_sector)
+    assert locate_by_time.equals(locate_by_time_object)
 
 
 def test_locate_time():

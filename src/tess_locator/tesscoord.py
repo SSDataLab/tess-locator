@@ -31,6 +31,9 @@ class TessCoord:
     row: float = attr.ib(
         converter=float, repr=lambda value: f"{value:.1f}", default=np.nan
     )
+    time: Time = attr.ib(converter=lambda value: Time(value) if value else None,
+                         repr=lambda value: f"{value.iso[:19]}" if value else "None",
+                         default=None)
 
     @column.validator
     def _validate_column(self, attribute, value):
@@ -57,7 +60,9 @@ class TessCoord:
 
     def to_skycoord(self) -> SkyCoord:
         wcs = get_wcs(self.sector, self.camera, self.ccd)
-        return wcs.pixel_to_world(self.column, self.row)
+        crd = wcs.pixel_to_world(self.column, self.row)
+        crd.obstime = self.time
+        return crd
 
 
 class TessCoordList(UserList):
@@ -86,6 +91,7 @@ class TessCoordList(UserList):
                 "ccd": c.ccd,
                 "column": c.column,
                 "row": c.row,
+                "time": c.time.iso if c.time else None,
             }
             for c in self
         ]

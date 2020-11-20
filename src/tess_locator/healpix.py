@@ -56,13 +56,17 @@ class HealpixLocator:
         else:
             crd = SkyCoord.from_name(target)
 
+        if time and not isinstance(time, Time):
+            time = Time(time)
+
         # Ensure `crd` is iterable
         if crd.isscalar:
             crd = crd.reshape((1,))
+        if time and time.isscalar:
+            time = time.reshape((1,))
 
         # If `time` is given, convert it to a list of sectors
         if time:
-            time = np.atleast_1d(time)
             if len(crd) != len(time):
                 raise ValueError("`target` and `time` must have matching lengths")
             sector = [time_to_sector(t) for t in time]
@@ -91,6 +95,8 @@ class HealpixLocator:
                         tesscrd = TessCoord(
                             sctr, camera, ccd, column=pixel[0], row=pixel[1]
                         )
+                        if time:
+                            tesscrd.time = time[idx]
                         result.append(tesscrd)
                 except (NoConvergence, ValueError):
                     pass
