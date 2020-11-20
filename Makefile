@@ -17,7 +17,7 @@ coverage:
 
 # Lint the code using `flake8`
 flake8:
-	$(CMD) flake8 $(PYMODULE) $(TESTS) --max-line-length=127 --max-complexity=12 --show-source --count
+	$(CMD) flake8 $(PYMODULE) $(TESTS)
 
 # Automatically format the code using `black`
 black:
