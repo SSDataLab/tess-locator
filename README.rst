@@ -1,9 +1,9 @@
 tess-locator
 ============
 
-**Fast offline queries of TESS FFI positions and filenames.**
+**Fast offline queries of TESS FFI positions and url's.**
 
-`tess-locator` is a user-friendly package which provides fast offline access to an embedded database of TESS meta data.
+`tess-locator` is a user-friendly package which provides fast offline access to an embedded database of TESS Full-Frame Image (FFI) meta data.
 It allows TESS pixel coordinates and FFI filenames to be queried in a fast way without requiring internet access.
 
 Example use
@@ -16,17 +16,17 @@ Converting celestial to pixel coordinates:
     >>> from tess_locator import locate
     >>> locate("Alpha Cen")
     List of 2 coordinates
-    ↳[TessCoord(sector=11, camera=2, ccd=2, column=1700.2, row=1860.3)
-      TessCoord(sector=12, camera=2, ccd=1, column=360.7, row=1838.8)]
+    ↳[TessCoord(sector=11, camera=2, ccd=2, column=1700.2, row=1860.3, time=None)
+      TessCoord(sector=12, camera=2, ccd=1, column=360.7, row=1838.8, time=None)]
 
 
 Obtaining pixel coordinates for a specific time:
 
 .. code-block:: python
 
-    >>> locate("Alpha Cen", time="2019-04-28 00:00:00")
+    >>> locate("Alpha Cen", time="2019-04-28")
     List of 1 coordinates
-    ↳[TessCoord(sector=11, camera=2, ccd=2, column=1700.2, row=1860.3)]
+    ↳[TessCoord(sector=11, camera=2, ccd=2, column=1700.2, row=1860.3, time=2019-04-28 00:00:00)]
 
 
 Obtaining FFI image meta data:
