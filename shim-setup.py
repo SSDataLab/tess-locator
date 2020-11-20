@@ -7,9 +7,11 @@
 import setuptools
 
 if __name__ == "__main__":
-    setuptools.setup(name='tess_locator',
-                     use_scm_version=True,
-                     setup_requires=["setuptools_scm"],
-                     packages=setuptools.find_packages(where="src"),
-                     package_dir={"": "src"},
-                     include_package_data=True)
+    setuptools.setup(
+        name="tess_locator",
+        use_scm_version=True,
+        setup_requires=["setuptools_scm"],
+        packages=setuptools.find_packages(where="src"),
+        package_dir={"": "src"},
+        include_package_data=True,
+    )

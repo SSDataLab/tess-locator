@@ -1,4 +1,4 @@
-name: Black code formatting check
+name: Black formatting checker
 
 on: [push, pull_request]
 
