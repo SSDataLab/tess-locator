@@ -36,22 +36,22 @@ class TessImage:
         if not search:
             raise ValueError(f"Unrecognized FFI filename: {self.filename}")
         return {
-            'sector': int(search.group(1)),
-            'camera': int(search.group(2)),
-            'ccd': int(search.group(3)),
+            "sector": int(search.group(1)),
+            "camera": int(search.group(2)),
+            "ccd": int(search.group(3)),
         }
 
     @property
     def sector(self) -> int:
-        return self._parse_filename()['sector']
+        return self._parse_filename()["sector"]
 
     @property
     def camera(self) -> int:
-        return self._parse_filename()['camera']
+        return self._parse_filename()["camera"]
 
     @property
     def ccd(self) -> int:
-        return self._parse_filename()['ccd']
+        return self._parse_filename()["ccd"]
 
     @property
     def url(self) -> str:

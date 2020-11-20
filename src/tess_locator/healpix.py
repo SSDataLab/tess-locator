@@ -81,7 +81,9 @@ class HealpixLocator:
         result = []
         for idx in range(len(crd)):
             for sctr, camera, ccd in ccdlist[idx]:
-                if sectors_to_search[idx] and sctr not in np.atleast_1d(sectors_to_search[idx]):
+                if sectors_to_search[idx] and sctr not in np.atleast_1d(
+                    sectors_to_search[idx]
+                ):
                     continue
                 wcs = get_wcs(sector=sctr, camera=camera, ccd=ccd)
                 try:

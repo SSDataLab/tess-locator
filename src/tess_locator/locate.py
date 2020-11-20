@@ -21,9 +21,7 @@ def locate(
     return hloc.locate(target=target, time=time, sector=sector)
 
 
-def _locate_slow(
-    target, time=None, sector=None
-) -> TessCoordList:
+def _locate_slow(target, time=None, sector=None) -> TessCoordList:
     """Returns a `TessCoordList.
 
     `target` only accepts a single-valued SkyCoord to avoid ambiguity between
