@@ -94,7 +94,7 @@ class TessImageList(UserList):
             x.append(str(self[idx]))
         if len(self) > 8:
             x.insert(4, "...")
-        return f"List of {len(self)} images\n ↳[" + "\n   ".join(x) + f"]"
+        return f"List of {len(self)} images\n ↳[" + "\n   ".join(x) + "]"
 
     def to_pandas(self) -> DataFrame:
         data = [

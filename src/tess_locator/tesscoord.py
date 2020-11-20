@@ -82,7 +82,7 @@ class TessCoordList(UserList):
             x.append(str(self[idx]))
         if len(self) > 8:
             x.insert(4, "...")
-        return f"List of {len(self)} coordinates\n ↳[" + "\n   ".join(x) + f"]"
+        return f"List of {len(self)} coordinates\n ↳[" + "\n   ".join(x) + "]"
 
     def __eq__(self, obj):
         return isinstance(obj, self.__class__) and self.to_pandas().equals(

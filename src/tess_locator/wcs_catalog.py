@@ -4,7 +4,7 @@ The functions in this module serve to populate and query a simple single-file
 data base which holds WCS data for TESS Full Frame Images across all sectors.
 
 The WCS catalog is a DataFrame composed of six columns:
-sector, camera, ccd, begin, end, wcs. 
+sector, camera, ccd, begin, end, wcs.
 """
 import itertools
 import warnings
