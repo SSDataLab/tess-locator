@@ -106,9 +106,10 @@ def time_to_sector(time: Time) -> np.array:
     """
     if isinstance(time, Time):
         time = time.iso
+    time_input = pd.DataFrame(np.atleast_1d(time))
 
-    dates = get_sector_dates()
-    df = pd.DataFrame(np.atleast_1d(time))
-    idx = df.apply(lambda x: np.argwhere((dates.begin.values <= x.values) & (dates.end.values >= x.values)), axis=1)
-    result = idx.apply(lambda x: dates.index[x[0][0]] if len(x) > 0 else -1)
+    sector_dates = get_sector_dates()
+    sectors = time_input.apply(lambda t: sector_dates.index.values[(sector_dates.begin.values <= t.values) & (sector_dates.end.values >= t.values)], axis=1)
+    # There should be one sector result per row; return -1 otherwise
+    result = sectors.apply(lambda s: s[0] if len(s) > 0 else -1)
     return result.values

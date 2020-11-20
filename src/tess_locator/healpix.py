@@ -69,7 +69,7 @@ class HealpixLocator:
         if time:
             if len(crd) != len(time):
                 raise ValueError("`target` and `time` must have matching lengths")
-            sector = [time_to_sector(t) for t in time]
+            sector = time_to_sector(time)
         else:
             # Else, ensure `sector` is iterable
             sector = np.atleast_1d(sector)
