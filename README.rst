@@ -16,6 +16,14 @@ tess-locator
 `tess-locator` is a user-friendly package which provides fast offline access to an embedded database of TESS Full-Frame Image (FFI) meta data.
 It allows TESS pixel coordinates and FFI filenames to be queried in a fast way without requiring internet access.
 
+
+Installation
+------------
+
+.. code-block:: bash
+
+    python -m pip install tess-locator
+
 Example use
 -----------
 
