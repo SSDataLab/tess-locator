@@ -1,6 +1,7 @@
 from astropy.time import Time
+import pandas as pd
 
-from tess_locator import TessCoord
+from tess_locator import TessCoord, TessCoordList
 
 
 def test_time_support():
@@ -17,3 +18,27 @@ def test_time_support():
     time = None
     tc = TessCoord(1, 1, 1, 100, 100, time=time)
     assert tc.to_skycoord().obstime is None
+
+
+def test_empty_list():
+    empty = TessCoordList([])
+    assert len(empty) == 0
+    assert "time" in empty.to_pandas().columns
+
+
+def test_list_from_pandas():
+    """Tests the `TessCoordList.from_pandas()` feature."""
+    df = pd.DataFrame(
+        {
+            "sector": [1, 2],
+            "camera": [3, 4],
+            "ccd": [1, 2],
+            "column": [100, 200],
+            "row": [300, 400],
+            "time": ["2019-01-01", "2019-01-02"],
+        },
+    )
+    coordlist = TessCoordList.from_pandas(df)
+    assert coordlist[0].sector == 1
+    assert coordlist[1].time == "2019-01-02"
+    coordlist.to_pandas().equals(df)  # Can we roundtrip?

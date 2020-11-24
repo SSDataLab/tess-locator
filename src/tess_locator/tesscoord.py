@@ -94,15 +94,29 @@ class TessCoordList(UserList):
         )
 
     def to_pandas(self) -> DataFrame:
-        data = [
-            {
-                "sector": c.sector,
-                "camera": c.camera,
-                "ccd": c.ccd,
-                "column": c.column,
-                "row": c.row,
-                "time": c.time,
-            }
-            for c in self
-        ]
-        return DataFrame(data)
+        data = {
+            "sector": [c.sector for c in self],
+            "camera": [c.camera for c in self],
+            "ccd": [c.ccd for c in self],
+            "column": [c.column for c in self],
+            "row": [c.row for c in self],
+            "time": [c.time for c in self],
+        }
+        return DataFrame(data).set_index("time")
+
+    @classmethod
+    def from_pandas(cls, df: DataFrame):
+        if "time" not in df.columns:
+            df.loc[:, "time"] = df.index
+        series = df.apply(
+            lambda x: TessCoord(
+                sector=x.sector,
+                camera=x.camera,
+                ccd=x.ccd,
+                column=x.column,
+                row=x.row,
+                time=x.time,
+            ),
+            axis=1,
+        )
+        return cls(series.values)
