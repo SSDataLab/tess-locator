@@ -3,6 +3,16 @@ tess-locator
 
 **Fast offline queries of TESS FFI positions and url's.**
 
+|pypi| |pytest| |black| |flake8| |mypy|
+
+.. |pypi| image:: https://img.shields.io/pypi/v/tess-locator
+                :target: https://pypi.python.org/pypi/tess-locator
+.. |pytest| image:: https://github.com/SSDataLab/tess-locator/workflows/pytest/badge.svg
+.. |black| image:: https://github.com/SSDataLab/tess-locator/workflows/black/badge.svg
+.. |flake8| image:: https://github.com/SSDataLab/tess-locator/workflows/flake8/badge.svg
+.. |mypy| image:: https://github.com/SSDataLab/tess-locator/workflows/mypy/badge.svg
+
+
 `tess-locator` is a user-friendly package which provides fast offline access to an embedded database of TESS Full-Frame Image (FFI) meta data.
 It allows TESS pixel coordinates and FFI filenames to be queried in a fast way without requiring internet access.
 
