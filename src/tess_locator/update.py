@@ -1,8 +1,13 @@
 """Script to update the FFI database that powers `tess-locator`.
 
 Usage
-=====
-$ python -m tess_locator.update SECTOR
+-----
+Use the following command to add a sector to the database:
+
+    $ python -m tess_locator.update SECTOR
+
+If the sector has been added previously, you will have to add the
+`--overwrite` flag.
 """
 import typer
 

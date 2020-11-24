@@ -1,11 +1,11 @@
 import logging
 from pathlib import Path
 
-__version__ = "0.1.3"
+__version__ = "0.2.0"
 
 __all__ = ["TessCoord", "TessCoordList", "TessImage", "TessImageList", "locate"]
 
-SECTORS = 28
+SECTORS = 29
 
 # Where does this package store its embedded data?
 PACKAGEDIR: Path = Path(__file__).parent.absolute()
