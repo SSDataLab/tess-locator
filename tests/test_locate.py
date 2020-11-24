@@ -22,8 +22,8 @@ def test_pi_men():
     # Do we get the same number of results?
     assert len(mast_result) == len(our_result)
     # Do the sector, camera, and ccd numbers all match?
-    our_result_df = our_result.to_pandas()[["sector", "camera", "ccd"]]
-    mast_result_df = mast_result[["sector", "camera", "ccd"]].to_pandas()
+    our_result_df = our_result.to_pandas().reset_index()[["sector", "camera", "ccd"]]
+    mast_result_df = mast_result.to_pandas().reset_index()[["sector", "camera", "ccd"]]
     assert our_result_df.equals(mast_result_df)
     # Can we search by passing a string instead of the coordinates?
     our_result2 = locate("Pi Men")
@@ -54,13 +54,19 @@ def test_scalar_arguments():
         locate(crd, sector=sector[:2])
 
     # Do we recover the correct results?
-    locate_by_time = locate(crd, time=time).to_pandas()[["sector", "camera", "ccd"]]
-    locate_by_time_object = locate(crd, time=Time(time)).to_pandas()[
-        ["sector", "camera", "ccd"]
-    ]
-    locate_by_sector = locate(crd, sector=sector).to_pandas()[
-        ["sector", "camera", "ccd"]
-    ]
+    locate_by_time = (
+        locate(crd, time=time).to_pandas().reset_index()[["sector", "camera", "ccd"]]
+    )
+    locate_by_time_object = (
+        locate(crd, time=Time(time))
+        .to_pandas()
+        .reset_index()[["sector", "camera", "ccd"]]
+    )
+    locate_by_sector = (
+        locate(crd, sector=sector)
+        .to_pandas()
+        .reset_index()[["sector", "camera", "ccd"]]
+    )
     assert locate_by_time.equals(locate_by_sector)
     assert locate_by_time.equals(locate_by_time_object)
 

@@ -21,9 +21,13 @@ def test_time_support():
 
 
 def test_empty_list():
+    """Does to_pandas() on an empty list still contain the expected columns?"""
     empty = TessCoordList([])
     assert len(empty) == 0
-    assert "time" in empty.to_pandas().columns
+    df = empty.to_pandas()
+    assert "sector" in df.columns
+    assert "camera" in df.columns
+    assert "ccd" in df.columns
 
 
 def test_list_from_pandas():
