@@ -93,6 +93,16 @@ class TessCoordList(UserList):
             obj.to_pandas()
         )
 
+    def get_images(self, time: Union[str, Time] = None) -> TessImageList:
+        """Returns the list of FFI images which include the coordinates."""
+        if len(self) == 0:
+            return TessImageList([])
+
+        result = self[0].get_images(time=time)
+        for img in self[1:]:
+            result += img.get_images(time=time)
+        return result
+
     def to_pandas(self) -> DataFrame:
         data = {
             "sector": [c.sector for c in self],
