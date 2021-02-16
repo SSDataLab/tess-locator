@@ -9,7 +9,7 @@ from astropy.coordinates import SkyCoord
 from astropy.time import Time
 from astroquery.mast import Tesscut
 
-from tess_locator import locate
+from tess_locator import locate, SECTORS
 
 
 def test_pi_men():
@@ -17,6 +17,7 @@ def test_pi_men():
     # Query using Tesscut
     crd = SkyCoord(ra=84.291188, dec=-80.46911982, unit="deg")
     mast_result = Tesscut.get_sectors(crd)
+    mast_result = mast_result[mast_result['sector'] <= SECTORS]
     # Query using our tool
     our_result = locate(crd)
     # Do we get the same number of results?
@@ -27,7 +28,7 @@ def test_pi_men():
     assert our_result_df.equals(mast_result_df)
     # Can we search by passing a string instead of the coordinates?
     our_result2 = locate("Pi Men")
-    assert our_result == our_result2
+    assert our_result.to_pandas().round(2).equals(our_result2.to_pandas().round(2))
 
 
 def test_scalar_vs_nonscalar_coordinate():

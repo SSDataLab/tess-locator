@@ -46,3 +46,14 @@ def test_list_from_pandas():
     assert coordlist[0].sector == 1
     assert coordlist[1].time == "2019-01-02"
     coordlist.to_pandas().equals(df)  # Can we roundtrip?
+
+
+def test_get_images_twice():
+    """Regression test: requesting an image list twice should not change the outcome."""
+    tcl = TessCoordList([
+        TessCoord(sector=5, camera=1, ccd=4, column=1553.9, row=1103.0, time="2018-11-21 17:35:00"),
+        TessCoord(sector=5, camera=1, ccd=4, column=1553.9, row=1103.0, time="2018-11-22 17:35:00")]
+    )
+    len1 = len(tcl.get_images())
+    len2 = len(tcl.get_images())
+    assert len1 == len2

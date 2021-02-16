@@ -98,7 +98,7 @@ class TessCoordList(UserList):
         if len(self) == 0:
             return TessImageList([])
 
-        result = self[0].get_images(time=time)
+        result = self[0].get_images(time=time).copy()
         for img in self[1:]:
             result += img.get_images(time=time)
         return result
