@@ -17,7 +17,7 @@ def test_pi_men():
     # Query using Tesscut
     crd = SkyCoord(ra=84.291188, dec=-80.46911982, unit="deg")
     mast_result = Tesscut.get_sectors(crd)
-    mast_result = mast_result[mast_result['sector'] <= SECTORS]
+    mast_result = mast_result[mast_result["sector"] <= SECTORS]
     # Query using our tool
     our_result = locate(crd)
     # Do we get the same number of results?
