@@ -1,5 +1,4 @@
 from collections import UserList
-from typing import Union
 
 import attr
 import numpy as np

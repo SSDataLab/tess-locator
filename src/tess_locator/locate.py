@@ -1,14 +1,12 @@
-import warnings
 from typing import Union, List
 
 from astropy.coordinates import SkyCoord
 from astropy.time import Time
 import numpy as np
-import pandas as pd
 
 from tess_stars2px import tess_stars2px_function_entry
 
-from . import TessCoord, TessCoordList, DATADIR
+from . import TessCoord, TessCoordList
 from .time import time_to_sector
 
 

@@ -26,7 +26,7 @@ def test_pi_men():
     our_result_df = our_result.to_pandas().reset_index()[["sector", "camera", "ccd"]]
     mast_result_df = mast_result.to_pandas().reset_index()[["sector", "camera", "ccd"]]
     # Note: MAST may have less results because it only reports archived data
-    assert our_result_df.iloc[0:len(mast_result_df)].equals(mast_result_df)
+    assert our_result_df.iloc[0 : len(mast_result_df)].equals(mast_result_df)
     # Can we search by passing a string instead of the coordinates?
     our_result2 = locate("Pi Men")
     assert our_result.to_pandas().round(2).equals(our_result2.to_pandas().round(2))
@@ -95,9 +95,9 @@ def test_locate_time():
     assert loc[0].camera == 1
     assert loc[0].ccd == 4
     # Can exactly one image be found?
-    #images = loc[0].get_images()
-    #assert len(images) == 1
-    #assert images[0].filename == "tess2019304232925-s0017-1-4-0161-s_ffic.fits"
+    # images = loc[0].get_images()
+    # assert len(images) == 1
+    # assert images[0].filename == "tess2019304232925-s0017-1-4-0161-s_ffic.fits"
 
 
 def test_locate_roundtrip():
