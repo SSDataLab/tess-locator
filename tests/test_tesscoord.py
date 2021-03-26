@@ -1,5 +1,6 @@
 from astropy.time import Time
 import pandas as pd
+import pytest
 
 from tess_locator import TessCoord, TessCoordList
 
@@ -14,7 +15,7 @@ def test_time_support():
     time = Time("2018-08-01")
     tc = TessCoord(1, 1, 1, 100, 100, time=time)
     assert tc.to_skycoord().obstime == time
-    # Cna time be None?
+    # Can time be None?
     time = None
     tc = TessCoord(1, 1, 1, 100, 100, time=time)
     assert tc.to_skycoord().obstime is None
@@ -48,6 +49,7 @@ def test_list_from_pandas():
     coordlist.to_pandas().equals(df)  # Can we roundtrip?
 
 
+@pytest.mark.skip  # because TessImage has moved to tess-cloud for now
 def test_get_images_twice():
     """Regression test: requesting an image list twice should not change the outcome."""
     tcl = TessCoordList(

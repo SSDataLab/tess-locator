@@ -1,15 +1,15 @@
-import itertools
 import warnings
 from typing import Union, List
 
-import numpy as np
 from astropy.coordinates import SkyCoord
 from astropy.time import Time
-from astropy.wcs import NoConvergence
+import numpy as np
+import pandas as pd
 
-from . import SECTORS, TessCoord, TessCoordList
-from .healpix import HealpixLocator
-from .wcs_catalog import get_wcs, time_to_sector
+from tess_stars2px import tess_stars2px_function_entry
+
+from . import TessCoord, TessCoordList, DATADIR
+from .time import time_to_sector
 
 
 def locate(
@@ -25,43 +25,52 @@ def locate(
     if time and not isinstance(time, Time):
         time = Time(time)
 
-    hloc = HealpixLocator()
-    return hloc.locate(target=target, time=time, sector=sector)
-
-
-def _locate_slow(target, time=None, sector=None) -> TessCoordList:
-    """Returns a `TessCoordList.
-
-    `target` only accepts a single-valued SkyCoord to avoid ambiguity between
-    multiple targets vs multiple sector observations of one target.
-    """
-    if isinstance(target, SkyCoord):
-        crd = target
-    else:
-        crd = SkyCoord.from_name(target)
-
-    if crd.shape != ():
-        raise ValueError("Only single-valued SkyCoord objects are supported.")
-
+    # If `time` is given, convert it to a list of sectors
     if time:
-        sector = time_to_sector(time)
-        if sector is None:
-            return TessCoordList([])
-
-    if sector is None:
-        sector = range(1, SECTORS + 1)
+        time = np.atleast_1d(time)
+        if not target.isscalar and len(target) != len(time):
+            raise ValueError("`target` and `time` must have matching lengths")
+        sectors_to_search = time_to_sector(time)
     else:
-        sector = np.atleast_1d(sector)
+        # Else, ensure `sector` is iterable
+        sectors_to_search = np.atleast_1d(sector)
+        if not target.isscalar and len(target) != len(sectors_to_search):
+            raise ValueError("`target` and `sector` must have matching lengths")
 
+    ra = np.atleast_1d(target.ra.to("deg").value)
+    dec = np.atleast_1d(target.dec.to("deg").value)
     result = []
-    for sctr, camera, ccd in itertools.product(sector, [1, 2, 3, 4], [1, 2, 3, 4]):
-        wcs = get_wcs(sector=sctr, camera=camera, ccd=ccd)
-        try:
-            with warnings.catch_warnings():
-                warnings.filterwarnings("ignore", message="All-NaN slice encountered")
-                pixel = wcs.all_world2pix(crd.ra, crd.dec, 1)
-                tesscrd = TessCoord(sctr, camera, ccd, column=pixel[0], row=pixel[1])
-                result.append(tesscrd)
-        except (NoConvergence, ValueError):
-            pass
+    for idx in range(len(ra)):
+        (
+            _,
+            _,
+            _,
+            out_sector,
+            out_camera,
+            out_ccd,
+            out_col,
+            out_row,
+            scinfo,
+        ) = tess_stars2px_function_entry(
+            0, ra[idx], dec[idx], trySector=sectors_to_search[idx]
+        )
+
+        for idx_out in range(len(out_sector)):
+            if out_sector[idx_out] < 0:
+                # tess-point returns -1 if no sector is found
+                continue
+            try:
+                crd = TessCoord(
+                    sector=out_sector[idx_out],
+                    camera=out_camera[idx_out],
+                    ccd=out_ccd[idx_out],
+                    column=out_col[idx_out],
+                    row=out_row[idx_out],
+                )
+            except ValueError:
+                pass  # illegal column or row, i.e. just off edge
+            if time:
+                crd.time = time[idx]
+            result.append(crd)
+
     return TessCoordList(result)
