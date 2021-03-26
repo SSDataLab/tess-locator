@@ -7,7 +7,7 @@ import numpy as np
 from tess_stars2px import tess_stars2px_function_entry
 
 from . import TessCoord, TessCoordList
-from .time import time_to_sector
+from .dates import time_to_sector
 
 
 def locate(
@@ -31,7 +31,10 @@ def locate(
         sectors_to_search = time_to_sector(time)
     else:
         # Else, ensure `sector` is iterable
-        sectors_to_search = np.atleast_1d(sector)
+        if sector:
+            sectors_to_search = np.atleast_1d(sector)
+        else:
+            sectors_to_search = [None]
         if not target.isscalar and len(target) != len(sectors_to_search):
             raise ValueError("`target` and `sector` must have matching lengths")
 

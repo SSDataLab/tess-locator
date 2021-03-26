@@ -13,7 +13,7 @@ def time_to_sector(time: Time):
         time = time.iso
     time_input = pd.DataFrame(np.atleast_1d(time))
 
-    sector_dates = get_sector_times()
+    sector_dates = get_sector_dates()
     sectors = time_input.apply(
         lambda t: sector_dates.index.values[
             (sector_dates.begin.values <= t.values)
@@ -26,5 +26,5 @@ def time_to_sector(time: Time):
     return result.values
 
 
-def get_sector_times():
+def get_sector_dates():
     return pd.read_csv(DATADIR / "tess-sector-dates.csv", index_col="sector")

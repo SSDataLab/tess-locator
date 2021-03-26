@@ -1,7 +1,7 @@
 from astropy.time import Time
 from numpy.testing import assert_array_equal
 
-from tess_locator.time import time_to_sector
+from tess_locator.dates import time_to_sector
 
 
 def test_time_to_sector():
