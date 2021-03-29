@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tess-locator"
-version = "0.3.0"
+version = "0.4.0"
 description = "Fast offline queries of TESS FFI positions and filenames."
 license = "MIT"
 authors = ["Geert Barentsen <hello@geert.io>",
@@ -23,6 +23,7 @@ numpy = ">= 1.19"
 tqdm = ">= 4.51"
 attrs = ">= 20.3.0"
 tess-point = ">= 0.6.1"
+tess-cloud = ">=0.2.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.0"
@@ -36,6 +37,7 @@ line-profiler = "^3.1.0"
 jupyterlab = "^2.2.9"
 pytest-xdist = "^2.1.0"
 pre-commit = "^2.8.2"
+#tess-cloud = {path = "../tess-cloud", develop = true}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

@@ -49,8 +49,8 @@ def test_list_from_pandas():
     coordlist.to_pandas().equals(df)  # Can we roundtrip?
 
 
-@pytest.mark.skip  # because TessImage has moved to tess-cloud for now
-def test_get_images_twice():
+# @pytest.mark.skip  # because TessImage has moved to tess-cloud for now
+def test_list_images_twice():
     """Regression test: requesting an image list twice should not change the outcome."""
     tcl = TessCoordList(
         [
@@ -72,6 +72,6 @@ def test_get_images_twice():
             ),
         ]
     )
-    len1 = len(tcl.get_images())
-    len2 = len(tcl.get_images())
+    len1 = len(tcl.list_images())
+    len2 = len(tcl.list_images())
     assert len1 == len2

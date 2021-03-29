@@ -1,4 +1,5 @@
 from collections import UserList
+from typing import Union
 
 import attr
 import numpy as np
@@ -6,6 +7,7 @@ from astropy.time import Time
 from astropy.coordinates import SkyCoord
 from pandas import DataFrame
 
+from . import log
 
 # The science area of the TESS CCDs are bounded by:
 # lower left corner: (column, row) = (45, 1)
@@ -66,6 +68,34 @@ class TessCoord:
         crd.obstime = self.time
         return crd
 
+    def list_images(
+        self, time: Union[str, Time] = None, author: str = "spoc"
+    ) -> "TessImageList":
+        """Returns the list of FFI images which include the coordinate.
+
+        Parameters
+        ----------
+        author : str
+            "spoc" or "tica"
+
+        Notes
+        -----
+        This feature will use the `tess-cloud` package to query a catalog of
+        TESS images.
+        """
+        # local import to avoid circular dependency
+        from tess_cloud import list_images
+
+        if time is None:
+            time = self.time
+        return list_images(
+            sector=self.sector,
+            camera=self.camera,
+            ccd=self.ccd,
+            time=time,
+            author=author,
+        )
+
 
 class TessCoordList(UserList):
     def __repr__(self):
@@ -84,6 +114,27 @@ class TessCoordList(UserList):
         return isinstance(obj, self.__class__) and self.to_pandas().equals(
             obj.to_pandas()
         )
+
+    def list_images(
+        self, time: Union[str, Time] = None, author: str = "spoc"
+    ) -> "TessImageList":
+        """Returns the list of FFI images which include the coordinates.
+
+        Parameters
+        ----------
+        author : str
+            "spoc" or "tica"
+        """
+        # local import to avoid circular dependency
+        from tess_cloud import TessImageList
+
+        if len(self) == 0:
+            return TessImageList([])
+
+        result = self[0].list_images(time=time, author=author).copy()
+        for img in self[1:]:
+            result += img.list_images(time=time, author=author)
+        return result
 
     def to_pandas(self) -> DataFrame:
         data = {

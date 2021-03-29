@@ -2,7 +2,7 @@ import logging
 from pathlib import Path
 import tess_stars2px
 
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 
 # Where does this package store its embedded data?
 PACKAGEDIR: Path = Path(__file__).parent.absolute()
