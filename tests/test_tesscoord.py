@@ -75,3 +75,11 @@ def test_list_images_twice():
     len1 = len(tcl.list_images())
     len2 = len(tcl.list_images())
     assert len1 == len2
+
+
+def test_list_images():
+    crd = TessCoord(sector=11, camera=2, ccd=2, column=1699, row=1860)
+    imglist = crd.list_images()
+    assert len(imglist) == 1248
+    df = imglist.to_pandas()
+    assert len(df) == len(imglist)

@@ -7,8 +7,6 @@ from astropy.time import Time
 from astropy.coordinates import SkyCoord
 from pandas import DataFrame
 
-from . import log
-
 # The science area of the TESS CCDs are bounded by:
 # lower left corner: (column, row) = (45, 1)
 # upper right corner: (column, row) = (2092, 2048)
@@ -68,10 +66,8 @@ class TessCoord:
         crd.obstime = self.time
         return crd
 
-    def list_images(
-        self, time: Union[str, Time] = None, author: str = "spoc"
-    ) -> "TessImageList":
-        """Returns the list of FFI images which include the coordinate.
+    def list_images(self, time: Union[str, Time] = None, author: str = "spoc"):
+        """Returns a `TessImageList` detailing the FFI images which include the coordinate.
 
         Parameters
         ----------
@@ -115,10 +111,8 @@ class TessCoordList(UserList):
             obj.to_pandas()
         )
 
-    def list_images(
-        self, time: Union[str, Time] = None, author: str = "spoc"
-    ) -> "TessImageList":
-        """Returns the list of FFI images which include the coordinates.
+    def list_images(self, time: Union[str, Time] = None, author: str = "spoc"):
+        """Returns a `TessImageList` detailing the FFI images which include the coordinates.
 
         Parameters
         ----------

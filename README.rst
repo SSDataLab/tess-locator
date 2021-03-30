@@ -13,8 +13,10 @@ tess-locator
 .. |mypy| image:: https://github.com/SSDataLab/tess-locator/workflows/mypy/badge.svg
 
 
-`tess-locator` is a user-friendly wrapper around the `tess-point <https://github.com/christopherburke/tess-point>`_
-package which allows the positions of astronomical objects in the TESS data set
+`tess-locator` is a user-friendly package which combines the
+`tess-point <https://github.com/christopherburke/tess-point>`_
+and `tess-cloud <https://github.com/SSDataLab/tess-cloud>`_ packages
+to enable the positions of astronomical objects in the TESS data set
 to be queried in a fast and friendly way.
 
 
