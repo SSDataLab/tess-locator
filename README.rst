@@ -30,7 +30,7 @@ Installation
 Example use
 -----------
 
-Converting celestial to pixel coordinates:
+Converting celestial coordinates to TESS pixel coordinates:
 
 .. code-block:: python
 
@@ -49,6 +49,44 @@ Obtaining pixel coordinates for a specific time:
     >>> locate("Alpha Cen", time="2019-04-28")
     List of 1 coordinates
     ↳[TessCoord(sector=11, camera=2, ccd=2, column=1699.1, row=1860.3, time=2019-04-28 00:00:00)]
+
+
+Obtaining pixel coordinates for a specific celestial coordinate:
+
+.. code-block:: python
+
+    >>> from astropy.coordinates import SkyCoord
+    >>> crd = SkyCoord(ra=60, dec=70, unit='deg')
+    >>> locate(crd)
+    List of 1 coordinates
+    ↳[TessCoord(sector=19, camera=2, ccd=2, column=355.3, row=1045.9, time=None)]
+
+
+You can access the properties of `TessCoord` objects using standard list and attribute syntax:
+
+.. code-block:: python
+
+    >>> crdlist = locate("Alpha Cen")
+    >>> crdlist[0].sector, crdlist[0].camera, crdlist[0].ccd, crdlist[0].column, crdlist[0].row
+    (11, 2, 2, 1699.0540739785683, 1860.2510951146114)
+
+
+When you have obtained a `TessCoord` object, you can use it to obtain a list of the TESS Full Frame Images (FFIs) which covered the position:
+
+.. code-block:: python
+
+    >>> crdlist[0].list_images()
+    List of 1248 images
+    ↳[TessImage("tess2019113062933-s0011-2-2-0143-s_ffic.fits")
+      TessImage("tess2019113065933-s0011-2-2-0143-s_ffic.fits")
+      TessImage("tess2019113072933-s0011-2-2-0143-s_ffic.fits")
+      TessImage("tess2019113075933-s0011-2-2-0143-s_ffic.fits")
+      ...
+      TessImage("tess2019140065932-s0011-2-2-0143-s_ffic.fits")
+      TessImage("tess2019140072932-s0011-2-2-0143-s_ffic.fits")
+      TessImage("tess2019140075932-s0011-2-2-0143-s_ffic.fits")
+      TessImage("tess2019140082932-s0011-2-2-0143-s_ffic.fits")]
+
 
 
 Documentation

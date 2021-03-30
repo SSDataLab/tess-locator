@@ -1,8 +1,8 @@
 import logging
 from pathlib import Path
-import tess_stars2px
+import tess_stars2px  # provided by the `tess-point` package
 
-__version__ = "0.4.0"
+__version__ = "0.4.1"
 
 # Where does this package store its embedded data?
 PACKAGEDIR: Path = Path(__file__).parent.absolute()
