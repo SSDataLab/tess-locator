@@ -30,3 +30,7 @@ mypy:
 # Order the imports using `isort`
 isort:
 	$(CMD) isort $(PYMODULE) $(TESTS)
+
+clean:
+	find . -type f -name *.pyc -delete
+	find . -type d -name __pycache__ -delete
