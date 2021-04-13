@@ -66,7 +66,13 @@ class TessCoord:
         crd.obstime = self.time
         return crd
 
-    def list_images(self, time: Union[str, Time] = None, author: str = "spoc"):
+    def is_observed(self) -> bool:
+        """Returns true if this coordinate has been observed."""
+        return len(self.list_images()) > 0
+
+    def list_images(
+        self, time: Union[str, Time] = None, author: str = "spoc", provider: str = None
+    ):
         """Returns a `TessImageList` detailing the FFI images which include the coordinate.
 
         Parameters
@@ -90,6 +96,7 @@ class TessCoord:
             ccd=self.ccd,
             time=time,
             author=author,
+            provider=provider,
         )
 
 
@@ -111,7 +118,9 @@ class TessCoordList(UserList):
             obj.to_pandas()
         )
 
-    def list_images(self, time: Union[str, Time] = None, author: str = "spoc"):
+    def list_images(
+        self, time: Union[str, Time] = None, author: str = "spoc", provider: str = None
+    ):
         """Returns a `TessImageList` detailing the FFI images which include the coordinates.
 
         Parameters
@@ -125,9 +134,9 @@ class TessCoordList(UserList):
         if len(self) == 0:
             return TessImageList([])
 
-        result = self[0].list_images(time=time, author=author).copy()
+        result = self[0].list_images(time=time, author=author, provider=provider).copy()
         for img in self[1:]:
-            result += img.list_images(time=time, author=author)
+            result += img.list_images(time=time, author=author, provider=provider)
         return result
 
     def to_pandas(self) -> DataFrame:
