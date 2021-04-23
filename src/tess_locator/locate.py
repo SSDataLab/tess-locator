@@ -68,10 +68,10 @@ def locate(
                     column=out_col[idx_out],
                     row=out_row[idx_out],
                 )
+                if time:
+                    crd.time = time[idx]
+                result.append(crd)
             except ValueError:
                 pass  # illegal column or row, i.e. just off edge
-            if time:
-                crd.time = time[idx]
-            result.append(crd)
 
     return TessCoordList(result)

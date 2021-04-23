@@ -106,3 +106,9 @@ def test_locate_roundtrip():
     crd2 = locate(crd1)[0].to_skycoord()
     assert approx(crd1.ra.degree) == crd2.ra.degree
     assert approx(crd1.dec.degree) == crd2.dec.degree
+
+
+def test_edge_case():
+    # This coordinate falls just off the edge in Sector 23
+    crd = SkyCoord(194.24175295370543, 2.6293646219224858, unit='deg')
+    assert len(locate(crd, sector=23)) == 0
