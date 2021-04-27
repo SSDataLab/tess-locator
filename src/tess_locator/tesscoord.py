@@ -71,7 +71,10 @@ class TessCoord:
         return len(self.list_images()) > 0
 
     def list_images(
-        self, time: Union[str, Time] = None, author: str = "spoc", provider: Optional[str] = None
+        self,
+        time: Union[str, Time] = None,
+        author: str = "spoc",
+        provider: Optional[str] = None,
     ):
         """Returns a `TessImageList` detailing the FFI images which include the coordinate.
 
@@ -119,7 +122,10 @@ class TessCoordList(UserList):
         )
 
     def list_images(
-        self, time: Union[str, Time] = None, author: str = "spoc", provider: Optional[str] = None
+        self,
+        time: Union[str, Time] = None,
+        author: str = "spoc",
+        provider: Optional[str] = None,
     ):
         """Returns a `TessImageList` detailing the FFI images which include the coordinates.
 

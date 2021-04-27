@@ -110,5 +110,5 @@ def test_locate_roundtrip():
 
 def test_edge_case():
     # This coordinate falls just off the edge in Sector 23
-    crd = SkyCoord(194.24175295370543, 2.6293646219224858, unit='deg')
+    crd = SkyCoord(194.24175295370543, 2.6293646219224858, unit="deg")
     assert len(locate(crd, sector=23)) == 0
