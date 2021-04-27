@@ -26,5 +26,8 @@ def time_to_sector(time: Time):
     return result.values
 
 
-def get_sector_dates():
-    return pd.read_csv(DATADIR / "tess-sector-dates.csv", index_col="sector")
+def get_sector_dates(sector: int = None):
+    df = pd.read_csv(DATADIR / "tess-sector-dates.csv", index_col="sector")
+    if sector:
+        return df.query(f"sector == {sector}")
+    return df
