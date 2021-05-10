@@ -14,6 +14,7 @@ from astroquery.mast import Tesscut
 from tess_locator import locate, SECTORS
 
 
+@pytest.mark.xfail  # Frequent failures during ingest of reprocessed data into MAST
 def test_pi_men():
     """Tests `locate()` against `astroquery.mast.Tesscut.get_sectors()`"""
     # Query using Tesscut
