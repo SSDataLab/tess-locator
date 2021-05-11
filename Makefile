@@ -31,6 +31,10 @@ mypy:
 isort:
 	$(CMD) isort $(PYMODULE) $(TESTS)
 
+# Run the mkdocs dev server
+docserve:
+	$(CMD) mkdocs serve
+
 clean:
 	find . -type f -name *.pyc -delete
 	find . -type d -name __pycache__ -delete

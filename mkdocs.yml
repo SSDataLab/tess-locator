@@ -1,0 +1,21 @@
+site_name: tess-locator
+nav:
+    - Home: index.md
+    - Installation: installation.md
+    - api.md
+theme:
+  name: material
+  icon:
+    logo: material/navigation
+  palette:
+    scheme: default
+    primary: indigo
+repo_url: https://github.com/SSDataLab/tess-locator
+
+plugins:
+    - mkdocstrings
+
+markdown_extensions:
+    - pymdownx.highlight    # necessary for syntax highlighting
+    - pymdownx.superfences  # necessary for syntax highlighting
+    - pymdownx.inlinehilite
