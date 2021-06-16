@@ -1,3 +1,4 @@
+"""Defines the TessCoord and TessCoordList classes."""
 from collections import UserList
 from typing import Union, Optional
 
@@ -22,6 +23,17 @@ def _optional_time_converter(time) -> Time:
 
 @attr.s(slots=True)
 class TessCoord:
+    """Class representing a position in a single TESS Full Frame Image.
+
+    Args:
+        msg (str): Human readable string describing the exception.
+        code (:obj:`int`, optional): Error code.
+
+    Attributes:
+        msg (str): Human readable string describing the exception.
+        code (int): Exception error code.
+
+    """
     sector: int = attr.ib()
     camera: int = attr.ib(validator=attr.validators.in_([1, 2, 3, 4]))
     ccd: int = attr.ib(validator=attr.validators.in_([1, 2, 3, 4]))

@@ -14,13 +14,12 @@ from astroquery.mast import Tesscut
 from tess_locator import locate, SECTORS
 
 
-@pytest.mark.xfail  # Frequent failures during ingest of reprocessed data into MAST
+@pytest.mark.xfail  # TessCut currently claims Pi Men was in Sector 35 (whereas it was just off edge)
 def test_pi_men():
     """Tests `locate()` against `astroquery.mast.Tesscut.get_sectors()`"""
     # Query using Tesscut
     crd = SkyCoord(ra=84.291188, dec=-80.46911982, unit="deg")
     mast_result = Tesscut.get_sectors(crd)
-    mast_result = mast_result[mast_result["sector"] <= SECTORS]
     # Query using our tool
     our_result = locate(crd)
     # Do the sector, camera, and ccd numbers all match?
@@ -104,7 +103,7 @@ def test_locate_time():
 def test_locate_roundtrip():
     """Is the conversion SkyCoord -> TessCoord -> SkyCoord consistent?"""
     crd1 = SkyCoord.from_name("Proxima Cen")
-    crd2 = locate(crd1)[0].to_skycoord()
+    crd2 = locate(crd1, aberrate=False)[0].to_skycoord()
     assert approx(crd1.ra.degree) == crd2.ra.degree
     assert approx(crd1.dec.degree) == crd2.dec.degree
 

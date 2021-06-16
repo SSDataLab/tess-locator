@@ -58,8 +58,11 @@ Obtaining pixel coordinates for a specific celestial coordinate:
     >>> from astropy.coordinates import SkyCoord
     >>> crd = SkyCoord(ra=60, dec=70, unit='deg')
     >>> locate(crd)
-    List of 1 coordinates
-    ↳[TessCoord(sector=19, camera=2, ccd=2, column=355.3, row=1045.9, time=None)]
+    List of 4 coordinates
+    ↳[TessCoord(sector=19, camera=2, ccd=2, column=355.3, row=1045.9, time=None)
+      TessCoord(sector=25, camera=4, ccd=4, column=1107.0, row=285.9, time=None)
+      TessCoord(sector=26, camera=4, ccd=3, column=317.7, row=395.9, time=None)
+      TessCoord(sector=52, camera=4, ccd=4, column=603.5, row=240.2, time=None)]
 
 
 You can access the properties of `TessCoord` objects using standard list and attribute syntax:
@@ -67,11 +70,14 @@ You can access the properties of `TessCoord` objects using standard list and att
 .. code-block:: python
 
     >>> crdlist = locate("Alpha Cen")
-    >>> crdlist[0].sector, crdlist[0].camera, crdlist[0].ccd, crdlist[0].column, crdlist[0].row
-    (11, 2, 2, 1699.0540739785683, 1860.2510951146114)
+    >>> crdlist[0].sector, crdlist[0].camera, crdlist[0].ccd
+    (11, 2, 2)
+    >>> crdlist[0].column, crdlist[0].row
+    (1699.0540739785683, 1860.2510951146114)
 
 
-When you have obtained a `TessCoord` object, you can use it to obtain a list of the TESS Full Frame Images (FFIs) which covered the position:
+When you have obtained a `TessCoord` object, you can use it to obtain a list of the TESS Full Frame Images (FFIs) which covered the position.
+The objects returned are provided by the `tess-cloud <https://github.com/SSDataLab/tess-cloud>`_ package.
 
 .. code-block:: python
 

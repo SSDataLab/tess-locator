@@ -14,7 +14,9 @@ def locate(
     target: Union[SkyCoord, str],
     time: Union[Time, str, List[str]] = None,
     sector: Union[int, List[int]] = None,
+    aberrate: bool = True
 ) -> TessCoordList:
+    """Locate a target in the TESS FFI data set."""
     # Allow the target coordinate to be instantiated from a string
     if isinstance(target, str):
         target = SkyCoord.from_name(target)
@@ -53,7 +55,7 @@ def locate(
             out_row,
             scinfo,
         ) = tess_stars2px_function_entry(
-            0, ra[idx], dec[idx], trySector=sectors_to_search[idx]
+            0, ra[idx], dec[idx], trySector=sectors_to_search[idx], aberrate=aberrate
         )
 
         for idx_out in range(len(out_sector)):
