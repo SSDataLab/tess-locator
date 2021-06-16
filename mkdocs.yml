@@ -13,7 +13,13 @@ theme:
 repo_url: https://github.com/SSDataLab/tess-locator
 
 plugins:
-    - mkdocstrings
+    - mkdocstrings:
+        watch:
+            - src/tess_locator
+        handlers:
+          python:
+            selection:
+              docstring_style: "numpy"
 
 markdown_extensions:
     - pymdownx.highlight    # necessary for syntax highlighting
