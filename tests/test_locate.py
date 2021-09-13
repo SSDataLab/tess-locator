@@ -14,7 +14,6 @@ from astroquery.mast import Tesscut
 from tess_locator import locate, SECTORS
 
 
-@pytest.mark.xfail  # TessCut currently claims Pi Men was in Sector 35 (whereas it was just off edge)
 def test_pi_men():
     """Tests `locate()` against `astroquery.mast.Tesscut.get_sectors()`"""
     # Query using Tesscut
@@ -25,6 +24,9 @@ def test_pi_men():
     # Do the sector, camera, and ccd numbers all match?
     our_result_df = our_result.to_pandas().reset_index()[["sector", "camera", "ccd"]]
     mast_result_df = mast_result.to_pandas().reset_index()[["sector", "camera", "ccd"]]
+    # Hack: MAST incorrectly returns Pi Men as having been observed in Sector 35, while in
+    # reality it is just off the science area of the CCD, so we ignore the row for Sector 35.
+    mast_result_df = mast_result_df.query("sector != 35").reset_index(drop=True)
     # Note: MAST may have less results because it only reports archived data
     assert our_result_df.iloc[0 : len(mast_result_df)].equals(mast_result_df)
     # Can we search by passing a string instead of the coordinates?
