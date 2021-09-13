@@ -34,6 +34,7 @@ class TessCoord:
         code (int): Exception error code.
 
     """
+
     sector: int = attr.ib()
     camera: int = attr.ib(validator=attr.validators.in_([1, 2, 3, 4]))
     ccd: int = attr.ib(validator=attr.validators.in_([1, 2, 3, 4]))

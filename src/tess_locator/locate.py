@@ -14,7 +14,7 @@ def locate(
     target: Union[SkyCoord, str],
     time: Union[Time, str, List[str]] = None,
     sector: Union[int, List[int]] = None,
-    aberrate: bool = True
+    aberrate: bool = True,
 ) -> TessCoordList:
     """Locate a target in the TESS FFI data set."""
     # Allow the target coordinate to be instantiated from a string
