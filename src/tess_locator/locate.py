@@ -44,19 +44,23 @@ def locate(
     dec = np.atleast_1d(target.dec.to("deg").value)
     result = []
     for idx in range(len(ra)):
-        (
-            _,
-            _,
-            _,
-            out_sector,
-            out_camera,
-            out_ccd,
-            out_col,
-            out_row,
-            scinfo,
-        ) = tess_stars2px_function_entry(
-            0, ra[idx], dec[idx], trySector=sectors_to_search[idx], aberrate=aberrate
-        )
+        # tess_stars2px_function_entry will error if sector is not in range
+        try:
+            (
+                _,
+                _,
+                _,
+                out_sector,
+                out_camera,
+                out_ccd,
+                out_col,
+                out_row,
+                scinfo,
+            ) = tess_stars2px_function_entry(
+                0, ra[idx], dec[idx], trySector=sectors_to_search[idx], aberrate=aberrate
+            )
+        except:
+            continue
 
         for idx_out in range(len(out_sector)):
             if out_sector[idx_out] < 0:
