@@ -16,14 +16,14 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.7"
-astropy = ">= 4.0"
-pandas = ">= 1.0"
-numpy = ">= 1.19"
-tqdm = ">= 4.51"
-attrs = ">= 20.3.0"
-tess-point = ">= 0.6.1"
-tess-cloud = ">=0.3.1"
+python = "^3.8"
+astropy = "^5.2.0"
+pandas = "^1.4.4"
+numpy = "^1.23.0"
+tqdm = "^4.51.1"
+attrs = "^23.1.0"
+tess-point = "^0.8"
+tess-cloud = "^0.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.0"
