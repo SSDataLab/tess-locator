@@ -44,6 +44,9 @@ def locate(
     dec = np.atleast_1d(target.dec.to("deg").value)
     result = []
     for idx in range(len(ra)):
+        # tess-point will exit if trySector < 0
+        if isinstance(sectors_to_search[idx], np.int64) and sectors_to_search[idx] < 0:
+            continue
         (
             _,
             _,
