@@ -63,7 +63,7 @@ def locate(
                 trySector=sectors_to_search[idx],
                 aberrate=aberrate,
             )
-        except:
+        except SystemExit:
             continue
 
         for idx_out in range(len(out_sector)):
