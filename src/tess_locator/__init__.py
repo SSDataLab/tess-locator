@@ -2,7 +2,7 @@ import logging
 from pathlib import Path
 import tess_stars2px  # provided by the `tess-point` package
 
-__version__ = "0.6.dev"
+__version__ = "0.6.0"
 
 # Where does this package store its embedded data?
 PACKAGEDIR: Path = Path(__file__).parent.absolute()
