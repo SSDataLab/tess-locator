@@ -50,36 +50,36 @@ def test_list_from_pandas():
 
 
 # @pytest.mark.skip  # because TessImage has moved to tess-cloud for now
-def test_list_images_twice():
-    """Regression test: requesting an image list twice should not change the outcome."""
-    tcl = TessCoordList(
-        [
-            TessCoord(
-                sector=5,
-                camera=1,
-                ccd=4,
-                column=1553.9,
-                row=1103.0,
-                time="2018-11-21 17:35:00",
-            ),
-            TessCoord(
-                sector=5,
-                camera=1,
-                ccd=4,
-                column=1553.9,
-                row=1103.0,
-                time="2018-11-22 17:35:00",
-            ),
-        ]
-    )
-    len1 = len(tcl.list_images())
-    len2 = len(tcl.list_images())
-    assert len1 == len2
-
-
-def test_list_images():
-    crd = TessCoord(sector=11, camera=2, ccd=2, column=1699, row=1860)
-    imglist = crd.list_images()
-    assert len(imglist) == 1248
-    df = imglist.to_pandas()
-    assert len(df) == len(imglist)
+# def test_list_images_twice():
+#     """Regression test: requesting an image list twice should not change the outcome."""
+#     tcl = TessCoordList(
+#         [
+#             TessCoord(
+#                 sector=5,
+#                 camera=1,
+#                 ccd=4,
+#                 column=1553.9,
+#                 row=1103.0,
+#                 time="2018-11-21 17:35:00",
+#             ),
+#             TessCoord(
+#                 sector=5,
+#                 camera=1,
+#                 ccd=4,
+#                 column=1553.9,
+#                 row=1103.0,
+#                 time="2018-11-22 17:35:00",
+#             ),
+#         ]
+#     )
+#     len1 = len(tcl.list_images())
+#     len2 = len(tcl.list_images())
+#     assert len1 == len2
+#
+#
+# def test_list_images():
+#     crd = TessCoord(sector=11, camera=2, ccd=2, column=1699, row=1860)
+#     imglist = crd.list_images()
+#     assert len(imglist) == 1248
+#     df = imglist.to_pandas()
+#     assert len(df) == len(imglist)

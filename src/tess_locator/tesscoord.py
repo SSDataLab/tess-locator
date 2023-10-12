@@ -83,37 +83,37 @@ class TessCoord:
         """Returns true if this coordinate has been observed."""
         return len(self.list_images()) > 0
 
-    def list_images(
-        self,
-        time: Union[str, Time] = None,
-        author: str = "spoc",
-        provider: Optional[str] = None,
-    ):
-        """Returns a `TessImageList` detailing the FFI images which include the coordinate.
-
-        Parameters
-        ----------
-        author : str
-            "spoc" or "tica"
-
-        Notes
-        -----
-        This feature will use the `tess-cloud` package to query a catalog of
-        TESS images.
-        """
-        # local import to avoid circular dependency
-        from tess_cloud import list_images
-
-        if time is None:
-            time = self.time
-        return list_images(
-            sector=self.sector,
-            camera=self.camera,
-            ccd=self.ccd,
-            time=time,
-            author=author,
-            provider=provider,
-        )
+    # def list_images(
+    #     self,
+    #     time: Union[str, Time] = None,
+    #     author: str = "spoc",
+    #     provider: Optional[str] = None,
+    # ):
+    #     """Returns a `TessImageList` detailing the FFI images which include the coordinate.
+    #
+    #     Parameters
+    #     ----------
+    #     author : str
+    #         "spoc" or "tica"
+    #
+    #     Notes
+    #     -----
+    #     This feature will use the `tess-cloud` package to query a catalog of
+    #     TESS images.
+    #     """
+    #     # local import to avoid circular dependency
+    #     from tess_cloud import list_images
+    #
+    #     if time is None:
+    #         time = self.time
+    #     return list_images(
+    #         sector=self.sector,
+    #         camera=self.camera,
+    #         ccd=self.ccd,
+    #         time=time,
+    #         author=author,
+    #         provider=provider,
+    #     )
 
 
 class TessCoordList(UserList):
@@ -134,29 +134,29 @@ class TessCoordList(UserList):
             obj.to_pandas()
         )
 
-    def list_images(
-        self,
-        time: Union[str, Time] = None,
-        author: str = "spoc",
-        provider: Optional[str] = None,
-    ):
-        """Returns a `TessImageList` detailing the FFI images which include the coordinates.
-
-        Parameters
-        ----------
-        author : str
-            "spoc" or "tica"
-        """
-        # local import to avoid circular dependency
-        from tess_cloud import TessImageList
-
-        if len(self) == 0:
-            return TessImageList([])
-
-        result = self[0].list_images(time=time, author=author, provider=provider).copy()
-        for img in self[1:]:
-            result += img.list_images(time=time, author=author, provider=provider)
-        return result
+    # def list_images(
+    #     self,
+    #     time: Union[str, Time] = None,
+    #     author: str = "spoc",
+    #     provider: Optional[str] = None,
+    # ):
+    #     """Returns a `TessImageList` detailing the FFI images which include the coordinates.
+    #
+    #     Parameters
+    #     ----------
+    #     author : str
+    #         "spoc" or "tica"
+    #     """
+    #     # local import to avoid circular dependency
+    #     from tess_cloud import TessImageList
+    #
+    #     if len(self) == 0:
+    #         return TessImageList([])
+    #
+    #     result = self[0].list_images(time=time, author=author, provider=provider).copy()
+    #     for img in self[1:]:
+    #         result += img.list_images(time=time, author=author, provider=provider)
+    #     return result
 
     def to_pandas(self) -> DataFrame:
         data = {
