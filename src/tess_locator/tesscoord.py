@@ -1,6 +1,7 @@
 """Defines the TessCoord and TessCoordList classes."""
 from collections import UserList
-from typing import Union, Optional
+
+# from typing import Union, Optional
 
 import attr
 import numpy as np
