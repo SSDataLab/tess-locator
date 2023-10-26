@@ -80,9 +80,9 @@ class TessCoord:
         crd.obstime = self.time
         return crd
 
-    def is_observed(self) -> bool:
-        """Returns true if this coordinate has been observed."""
-        return len(self.list_images()) > 0
+    # def is_observed(self) -> bool:
+    #     """Returns true if this coordinate has been observed."""
+    #     return len(self.list_images()) > 0
 
     # def list_images(
     #     self,
